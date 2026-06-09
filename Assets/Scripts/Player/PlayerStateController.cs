@@ -27,7 +27,6 @@ public class PlayerStateController : MonoBehaviour
     private void OnJumpEvent(bool value) => OnJump = value;
     private void OnShieldEvent(bool value) => OnShield = value;
     private void OnChargeEvent(bool value) => OnCharge = value;
-    private void OnGroundedEvent(bool value) => IsGrounded = value;
     #endregion
 
     void OnEnable()
@@ -68,7 +67,12 @@ public class PlayerStateController : MonoBehaviour
         if (OnJump)
         {
             CurrentState = PlayerState.Jump;
-        } else if (OnPunch)
+        } 
+        else if (OnPunch && OnKick)
+        {
+            CurrentState = PlayerState.Power;
+        } 
+        else if (OnPunch)
         {
             CurrentState = PlayerState.Punch;
         } 
@@ -100,11 +104,11 @@ public class PlayerStateController : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.CompareTag("Ground")) OnGroundedEvent(true);
+        if(collision.gameObject.CompareTag("Ground")) IsGrounded = true;
     }
 
     void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Ground")) OnGroundedEvent(false);
+        if (collision.gameObject.CompareTag("Ground")) IsGrounded = false;
     }
 }

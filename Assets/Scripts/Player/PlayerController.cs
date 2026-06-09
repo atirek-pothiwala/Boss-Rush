@@ -1,18 +1,16 @@
 using UnityEngine;
-[RequireComponent(typeof(Animator))]
 
-[RequireComponent(typeof(PlayerStateController))]
-[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
     private static readonly int MoveHash = Animator.StringToHash("Move");
     private static readonly int StateHash = Animator.StringToHash("State");
     private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
 
-    [SerializeField] private GameObject character;
     private Animator animator;
     private Rigidbody2D rigidBody;
     private PlayerStateController stateController;
+    private GameObject enemy;
+
 
     [Header("Speed Settings")]
     [SerializeField] private float walkSpeed = 1.5f;
@@ -20,17 +18,23 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float airControlMultiplier = 0.6f;
     [SerializeField] public float transitionSpeed = 0.2f;
 
+
     [Header("Jump Settings")]
     [SerializeField] private float jumpHeight = 0.5f;
     [SerializeField] private float gravity = -10f;
-
     private readonly float minVerticalVelocity = -2f;
+
+
+    [Header("Attack Settings")]
+    [SerializeField] private float combatDistance = 2f;
 
     void Awake()
     {
-        animator = character.GetComponent<Animator>();
+        animator = GetComponent<Animator>();
         stateController = GetComponent<PlayerStateController>();
         rigidBody = GetComponent<Rigidbody2D>();
+        enemy = GameObject.FindGameObjectWithTag("Enemy");
+
     }
 
     public void ApplyGravity()
@@ -88,4 +92,40 @@ public class PlayerController : MonoBehaviour
         animator.SetInteger(StateHash, (int) stateController.CurrentState);
     }
 
+    public void OnAttack()
+    {
+        if (enemy == null) return;
+        Vector2 playerPos = rigidBody.position;
+        Vector2 enemyPos = enemy.transform.position;
+        if (Vector2.Distance(playerPos, enemyPos) > combatDistance) return;
+        enemy.GetComponent<BossController>().OnHurt();
+    }
+
+    public void OnHurt()
+    {
+        if (enemy == null) return;
+        Vector2 playerPos = rigidBody.position;
+        Vector2 enemyPos = enemy.transform.position;
+
+        // Deal damage
+        Vector2 knocked = (enemyPos - playerPos).normalized * 3f;
+        rigidBody.AddForce(knocked, ForceMode2D.Impulse);
+        animator.SetInteger(StateHash, (int) PlayerState.Hurt);
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        if (enemy == null) return;
+
+        Vector2 playerPos = transform.position;
+        Vector2 enemyPos = enemy.transform.position;
+
+        // Combat distance
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(playerPos, combatDistance);
+
+        // Direction to enemy
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(enemyPos, playerPos);
+    }
 }
