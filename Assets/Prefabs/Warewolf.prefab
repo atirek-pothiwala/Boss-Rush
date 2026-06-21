@@ -14,8 +14,6 @@ GameObject:
   - component: {fileID: 5834470276566464741}
   - component: {fileID: 3628572084209085490}
   - component: {fileID: 8708075472138618351}
-  - component: {fileID: 4798247124229908426}
-  - component: {fileID: 7659660924264810396}
   m_Layer: 0
   m_Name: Warewolf
   m_TagString: Enemy
@@ -158,7 +156,7 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.1}
   m_Radius: 0.4
 --- !u!95 &3628572084209085490
 Animator:
@@ -173,7 +171,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 27d7803a8afb0784bb5baf2263a23f68, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 1
@@ -194,77 +192,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6265dc4133f1a542a649a3ba0c353a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossController
-  character: {fileID: 76638536979355917}
   walkSpeed: 1.5
   runSpeed: 5
   airControlMultiplier: 0.6
   transitionSpeed: 0.2
   jumpHeight: 0.5
-  gravity: -10
-  decisionUpdateInterval: 0.5
-  combatDistance: 1
-  retreatDistance: 2
-  attackRangeMultiplier: 1.2
-  attackDelayTime: 2
-  postAttackRetreatTime: 0.3
-  rageModeThresholdPercent: 50
---- !u!114 &4798247124229908426
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 76638536979355917}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22560cfa4f3f35d409f9098012a5b99c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BossHealthSystem
-  maxHealth: 500
-  invincibilityDuration: 0.3
-  OnHealthChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDeath:
-    m_PersistentCalls:
-      m_Calls: []
-  OnTakeDamage:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &7659660924264810396
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 76638536979355917}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff58974dc5c55c149b2d80d89d0c7142, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BossAttackSystem
-  attackConfigs:
-  - attackState: 5
-    cooldown: 2
-    range: 0.6
-    damage: 10
-    knockbackForce: 3
-    preferredDistance: 1
-  - attackState: 6
-    cooldown: 3
-    range: 0.6
-    damage: 25
-    knockbackForce: 6
-    preferredDistance: 1.1
-  - attackState: 3
-    cooldown: 4
-    range: 0.6
-    damage: 30
-    knockbackForce: 7
-    preferredDistance: 1.5
-  - attackState: 7
-    cooldown: 5
-    range: 0.6
-    damage: 40
-    knockbackForce: 10
-    preferredDistance: 1.2
+  gravity: -20
+  combatDistance: 0.6

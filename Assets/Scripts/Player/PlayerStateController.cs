@@ -15,7 +15,6 @@ public class PlayerStateController : MonoBehaviour
 
     public PlayerState CurrentState { get; private set; }
 
-    #region Event Handlers
     private void OnMovementEvent(Vector2 value)
     {
         value.y = 0f; // Ensure vertical input doesn't affect movement state
@@ -27,7 +26,6 @@ public class PlayerStateController : MonoBehaviour
     private void OnJumpEvent(bool value) => OnJump = value;
     private void OnShieldEvent(bool value) => OnShield = value;
     private void OnChargeEvent(bool value) => OnCharge = value;
-    #endregion
 
     void OnEnable()
     {
@@ -63,32 +61,8 @@ public class PlayerStateController : MonoBehaviour
             CurrentState = PlayerState.Fall;
             return;
         }
-        
-        if (OnJump)
-        {
-            CurrentState = PlayerState.Jump;
-        } 
-        else if (OnPunch && OnKick)
-        {
-            CurrentState = PlayerState.Power;
-        } 
-        else if (OnPunch)
-        {
-            CurrentState = PlayerState.Punch;
-        } 
-        else if (OnKick)
-        {
-            CurrentState = PlayerState.Kick;
-        }
-        else if (OnCharge)
-        {
-            CurrentState = PlayerState.Charge;
-        } 
-        else if (OnShield)
-        {
-            CurrentState = PlayerState.Shield;
-        } 
-        else if (OnRun && MovementInput.magnitude > 0f)
+
+        if (OnRun && MovementInput.magnitude > 0f)
         {
             CurrentState = PlayerState.Run;
         } 
@@ -98,7 +72,34 @@ public class PlayerStateController : MonoBehaviour
         }
         else
         {
-            CurrentState = PlayerState.Idle;
+            if (OnJump)
+            {
+                CurrentState = PlayerState.Jump;
+            } 
+            else if (OnPunch && OnKick)
+            {   
+                CurrentState = PlayerState.Power;
+            } 
+            else if (OnPunch)
+            {
+                CurrentState = PlayerState.Punch;
+            } 
+            else if (OnKick)
+            {
+                CurrentState = PlayerState.Kick;
+            }
+            else if (OnCharge)
+            {
+                CurrentState = PlayerState.Charge;
+            } 
+            else if (OnShield)
+            {
+                CurrentState = PlayerState.Shield;
+            } 
+            else
+            {
+                CurrentState = PlayerState.Idle;
+            }
         }
     }
 

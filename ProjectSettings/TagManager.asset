@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Ground
   - Enemy
+  - HeroHealth
+  - HeroStamina
+  - BossHealth
+  - BossStamina
   layers:
   - Default
   - TransparentFX

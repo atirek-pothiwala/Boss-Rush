@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -6,10 +7,12 @@ public class PlayerController : MonoBehaviour
     private static readonly int StateHash = Animator.StringToHash("State");
     private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
 
+    // Components
     private Animator animator;
     private Rigidbody2D rigidBody;
     private PlayerStateController stateController;
     private GameObject enemy;
+    private Slider healthBar, staminaBar;
 
 
     [Header("Speed Settings")]
@@ -26,7 +29,7 @@ public class PlayerController : MonoBehaviour
 
 
     [Header("Attack Settings")]
-    [SerializeField] private float combatDistance = 2f;
+    [SerializeField] private float combatDistance = 0.6f;
 
     void Awake()
     {
@@ -34,7 +37,8 @@ public class PlayerController : MonoBehaviour
         stateController = GetComponent<PlayerStateController>();
         rigidBody = GetComponent<Rigidbody2D>();
         enemy = GameObject.FindGameObjectWithTag("Enemy");
-
+        healthBar = GameObject.FindGameObjectWithTag("HeroHealth").GetComponent<Slider>();
+        staminaBar = GameObject.FindGameObjectWithTag("HeroStamina").GetComponent<Slider>();
     }
 
     public void ApplyGravity()
@@ -94,17 +98,24 @@ public class PlayerController : MonoBehaviour
 
     public void OnAttack()
     {
+        if (staminaBar.value < 0.1f) { return; }
+        staminaBar.value -= 0.1f;
+
         if (enemy == null) return;
-        Vector2 playerPos = rigidBody.position;
+        Vector2 playerPos = transform.position;
         Vector2 enemyPos = enemy.transform.position;
-        if (Vector2.Distance(playerPos, enemyPos) > combatDistance) return;
-        enemy.GetComponent<BossController>().OnHurt();
+        float distance = Vector2.Distance(playerPos, enemyPos);
+        if (distance > combatDistance) return;
+        enemy.GetComponent<BossController>().OnDamage();
     }
 
-    public void OnHurt()
+    public void OnDamage()
     {
+        if (healthBar.value <= 0f) { return; }
+        healthBar.value -= 0.1f;
+        
         if (enemy == null) return;
-        Vector2 playerPos = rigidBody.position;
+        Vector2 playerPos = transform.position;
         Vector2 enemyPos = enemy.transform.position;
 
         // Deal damage

@@ -1,12 +1,16 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BossController : MonoBehaviour
 {
     private static readonly int StateHash = Animator.StringToHash("State");
     private static readonly int MoveHash = Animator.StringToHash("Move");
 
-    [Header("Object References")]
-    [SerializeField] private GameObject character;
+    // Components
+    private Animator animator;
+    private Rigidbody2D rigidBody;
+    private GameObject player;
+    private Slider healthBar, staminaBar;
 
     [Header("Movement Settings")]
     [SerializeField] private float walkSpeed = 1.5f;
@@ -22,16 +26,6 @@ public class BossController : MonoBehaviour
     [Header("AI Decision Settings")]
     [SerializeField] private float combatDistance = 2f;
 
-    [Header("Combat Settings")]
-    [SerializeField] private float attackDelayTime = 0.5f;
-    [SerializeField] private float postAttackRetreatTime = 0.3f;
-    [SerializeField] private int rageModeThresholdPercent = 50;
-
-    // Components
-    private Animator animator;
-    private Rigidbody2D rigidBody;
-    private GameObject player;
-
     // State tracking
     private BossState currentState = BossState.Idle;
     private BossState previousState = BossState.Idle;
@@ -45,14 +39,16 @@ public class BossController : MonoBehaviour
         animator = GetComponent<Animator>();
         rigidBody = GetComponent<Rigidbody2D>();
         player = GameObject.FindGameObjectWithTag("Player");
+        healthBar = GameObject.FindGameObjectWithTag("BossHealth").GetComponent<Slider>();
+        staminaBar = GameObject.FindGameObjectWithTag("BossStamina").GetComponent<Slider>();
     }
 
     void Update()
     {
         if (player == null) return;
         ApplyGravity();
-        //MoveTowardTarget(player.transform.position, combatDistance);
-        //ApplyMovement();
+        MoveTowardTarget(player.transform.position, combatDistance);
+        ApplyMovement();
         LookAtPlayer();
 
         // Update animations
@@ -142,31 +138,32 @@ public class BossController : MonoBehaviour
 
     public void OnAttack()
     {
+        if (staminaBar.value < 0.1f) { return; }
+        staminaBar.value -= 0.1f;
+
         if (player == null) return;
         Vector2 playerPos = player.transform.position;
-        Vector2 enemyPos = rigidBody.position;;
-        if (Vector2.Distance(enemyPos, playerPos) > combatDistance) return;
-        player.GetComponent<PlayerController>().OnHurt();
+        Vector2 enemyPos = transform.position;
+        float distance = Vector2.Distance(playerPos, enemyPos);
+        if (distance > combatDistance) return;
+        player.GetComponent<PlayerController>().OnDamage();
     }
 
-    public void RunAway()
+    public void OnDamage()
     {
-        if (player == null) return;
-        currentState = BossState.Run;
-        //MoveAwayFromTarget(player.transform.position, retreatDistance);
-    }
-
-    public void OnHurt()
-    {
+        if (healthBar.value <= 0f) { return; }
+        healthBar.value -= 0.1f;
+        
         if (player == null) return;
         Vector2 playerPos = player.transform.position;
-        Vector2 bossPos = rigidBody.position;
+        Vector2 bossPos = transform.position;
 
         // Deal damage
         Vector2 knocked = (bossPos - playerPos).normalized * 3f;
         rigidBody.AddForce(knocked, ForceMode2D.Impulse);
         animator.SetInteger(StateHash, (int) BossState.Hurt);
     }
+    
     void OnDrawGizmosSelected()
     {
         if (player == null) return;
@@ -181,6 +178,13 @@ public class BossController : MonoBehaviour
         // Direction to player
         Gizmos.color = Color.green;
         Gizmos.DrawLine(bossPos, playerPos);
+    }
+
+    public void RunAway()
+    {
+        if (player == null) return;
+        currentState = BossState.Run;
+        //MoveAwayFromTarget(player.transform.position, retreatDistance);
     }
 
     void OnCollisionEnter2D(Collision2D collision)
