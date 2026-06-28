@@ -192,10 +192,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6265dc4133f1a542a649a3ba0c353a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossController
+  attackConfigs:
+  - state: 3
+    cooldown: 1
+    range: 0.8
+    damage: 40
+    knockbackForce: 4
+    stamina: 30
+    isAerial: 0
+    isRun: 1
+  - state: 5
+    cooldown: 0.5
+    range: 0
+    damage: 10
+    knockbackForce: 0
+    stamina: 10
+    isAerial: 0
+    isRun: 0
+  - state: 6
+    cooldown: 1
+    range: 0
+    damage: 40
+    knockbackForce: 3.5
+    stamina: 30
+    isAerial: 0
+    isRun: 0
+  - state: 7
+    cooldown: 0.5
+    range: 0
+    damage: 0
+    knockbackForce: 4
+    stamina: 30
+    isAerial: 0
+    isRun: 0
   walkSpeed: 1.5
   runSpeed: 5
   airControlMultiplier: 0.6
   transitionSpeed: 0.2
   jumpHeight: 0.5
   gravity: -20
-  combatDistance: 0.6
+  idleDuration: 1
+  damageDuration: 0.5
+  retreatDuration: 0.8

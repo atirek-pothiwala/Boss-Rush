@@ -684,6 +684,126 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackDistance
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: retreatDuration
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: postAttackWaitDuration
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[0].isRun
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[0].range
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[0].state
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[1].isRun
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[1].state
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[2].state
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[3].state
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[4].state
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[5].state
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[0].damage
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[1].damage
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[2].damage
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[0].stamina
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[1].stamina
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[2].stamina
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[3].stamina
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[0].cooldown
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[1].cooldown
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[2].cooldown
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[3].cooldown
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[3].isAerial
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[4].cooldown
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[5].cooldown
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[0].knockbackForce
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[2].knockbackForce
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8708075472138618351, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
+      propertyPath: attackConfigs.Array.data[3].knockbackForce
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

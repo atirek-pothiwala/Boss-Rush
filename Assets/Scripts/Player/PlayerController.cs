@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,7 +30,12 @@ public class PlayerController : MonoBehaviour
 
 
     [Header("Attack Settings")]
-    [SerializeField] private float combatDistance = 0.6f;
+    [SerializeField] private float attackDistance = 0.6f;
+
+    [SerializeField] [Range(0.5f, 1f)] private float idleDuration = 1f;
+    [SerializeField] [Range(0.5f, 1f)] private float damageDuration = 0.5f;
+
+    private bool isBusy = false;
 
     void Awake()
     {
@@ -71,7 +77,6 @@ public class PlayerController : MonoBehaviour
             transform.localScale = new Vector3(Mathf.Sign(moveInput.x), 1f, 1f);
         }
 
-        // Update animation
         animator.SetFloat(MoveHash, moveAmount, transitionSpeed, Time.deltaTime);
     }
 
@@ -88,40 +93,44 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        HandleJump();
+        if (enemy == null) return;
+        if(isBusy) return;
         ApplyGravity();
+        HandleJump();
         HandleMovement();
-
         animator.SetBool(IsGroundedHash, stateController.IsGrounded);
         animator.SetInteger(StateHash, (int) stateController.CurrentState);
     }
 
-    public void OnAttack()
+    public IEnumerator AttackRoutine()
     {
-        if (staminaBar.value < 0.1f) { return; }
+        if (staminaBar.value < 0.1f) yield break;
         staminaBar.value -= 0.1f;
-
-        if (enemy == null) return;
+        
         Vector2 playerPos = transform.position;
         Vector2 enemyPos = enemy.transform.position;
         float distance = Vector2.Distance(playerPos, enemyPos);
-        if (distance > combatDistance) return;
-        enemy.GetComponent<BossController>().OnDamage();
+        
+        if (distance > attackDistance) yield break;
+        yield return enemy.GetComponent<BossController>().DamageRoutine();   
     }
 
-    public void OnDamage()
+    public IEnumerator DamageRoutine(BossAttackConfig attackConfig)
     {
-        if (healthBar.value <= 0f) { return; }
-        healthBar.value -= 0.1f;
+        if (healthBar.value <= 0f) yield return null;
+        healthBar.value -= attackConfig.damage / 100f;
         
-        if (enemy == null) return;
         Vector2 playerPos = transform.position;
         Vector2 enemyPos = enemy.transform.position;
-
-        // Deal damage
-        Vector2 knocked = (enemyPos - playerPos).normalized * 3f;
-        rigidBody.AddForce(knocked, ForceMode2D.Impulse);
+        Vector2 knockedDirection = (playerPos - enemyPos).normalized;
+        
+        isBusy = true;
+        
+        rigidBody.AddForce(knockedDirection * attackConfig.knockbackForce, ForceMode2D.Impulse);
         animator.SetInteger(StateHash, (int) PlayerState.Hurt);
+        yield return new WaitForSeconds(damageDuration);
+
+        isBusy = false;
     }
 
     void OnDrawGizmosSelected()
@@ -133,7 +142,7 @@ public class PlayerController : MonoBehaviour
 
         // Combat distance
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(playerPos, combatDistance);
+        Gizmos.DrawWireSphere(playerPos, attackDistance);
 
         // Direction to enemy
         Gizmos.color = Color.green;
