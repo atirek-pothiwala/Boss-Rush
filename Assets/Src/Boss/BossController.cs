@@ -12,6 +12,7 @@ public class BossController : MonoBehaviour
     private Animator animator;
     private Rigidbody2D rigidBody;
     private GameObject hero;
+    private SoundManager SoundManager => SoundManager.Instance;
     private PauseManager PauseManager => PauseManager.Instance;
     private HealthManager HealthManager => HealthManager.Instance;
     
@@ -150,29 +151,30 @@ public class BossController : MonoBehaviour
     public IEnumerator DamageRoutine(PlayerAttackConfig attack)
     {
         if (HealthManager.IsBossDead) yield break;
-        HealthManager.UpdateBossHealth(-attack.damage);
-
+        SoundManager.PlayOneShot(attack.hitSound);
+        SoundManager.PlayOneShot(attack.bloodSound);
+        
         isAttackInterrupted = true;
         isBusy = true;
+
+        HealthManager.UpdateBossHealth(-attack.damage);
         
         Vector2 direction = LookingDirection();
         rigidBody.AddForceX(-direction.x * attack.knockbackForce, ForceMode2D.Impulse);
         animator.SetInteger(StateHash, (int) BossState.Hurt);
 
-        yield return new WaitForSeconds(damageCooldown);
+        if(HealthManager.IsBossDead)
+        {
+            StopMovement();
+            animator.SetInteger(StateHash, (int) BossState.Dead);
+            SoundManager.PlayVictory();
+            yield break;
+        }
 
+        yield return new WaitForSeconds(damageCooldown);
         StartCoroutine(RetreatRoutine());
     }
     
-    public IEnumerator PostDamageRoutine() {
-        if (!HealthManager.IsBossDead) yield break;
-
-        StopMovement();
-        animator.SetInteger(StateHash, (int) BossState.Dead);
-
-        yield return null;
-    }
-
 
     // Helper Methods
 

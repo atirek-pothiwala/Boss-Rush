@@ -31,19 +31,19 @@ public class PauseManager : MonoBehaviour
 
     public void PauseGame()
     {
+        SoundManager.Instance.PlayHardClick();
+        
         IsGamePaused = true;
-
         Time.timeScale = 0;
-
         UIManager.Instance.PauseMenu.SetActive(true);
     }
 
     public void ResumeGame()
     {
+        SoundManager.Instance.PlayHardClick();
+
         IsGamePaused = false;
-
         Time.timeScale = 1;
-
         UIManager.Instance.PauseMenu.SetActive(false);
     }
 }

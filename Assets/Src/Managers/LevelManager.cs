@@ -12,7 +12,10 @@ public class LevelManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+    }
 
+    void Start()
+    {
         LoadEnvironment();
         LoadFighters();
     }
@@ -26,6 +29,7 @@ public class LevelManager : MonoBehaviour
 
     private void LoadEnvironment()
     {
+        SoundManager.Instance.PlayBattleMusic();
         foreach (var item in environmentObjects)
         {
             Instantiate(item);
@@ -34,15 +38,17 @@ public class LevelManager : MonoBehaviour
 
     public void RestartGame()
     {
-        Time.timeScale = 1;
+        SoundManager.Instance.PlayHardClick();
 
-        SceneManager.LoadScene("Game Page");
+        Time.timeScale = 1;
+        SceneManager.LoadScene("Fight Level");
     }
 
     public void MainMenu()
     {
-        Time.timeScale = 1;
+        SoundManager.Instance.PlayHardClick();
 
-        SceneManager.LoadScene("Menu Page");
+        Time.timeScale = 1;
+        SceneManager.LoadScene("Main Menu");
     }
 }

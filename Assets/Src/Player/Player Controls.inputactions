@@ -203,7 +203,7 @@
                     "id": "6b910c92-07c8-455d-844b-9b5f3201fff2",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "Press",
+                    "interactions": "Tap",
                     "initialStateCheck": false
                 },
                 {
@@ -212,7 +212,7 @@
                     "id": "8ce7ccfb-a619-4fbd-813e-bedd57bd590c",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "Press",
+                    "interactions": "Tap",
                     "initialStateCheck": false
                 },
                 {
@@ -221,7 +221,7 @@
                     "id": "1b94e208-57a0-4bc2-aa0c-de8a9b42766c",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "Press",
+                    "interactions": "Tap",
                     "initialStateCheck": false
                 },
                 {
@@ -230,7 +230,7 @@
                     "id": "51af93f8-46e2-41fd-b119-10163c1c814a",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "Press",
+                    "interactions": "Tap",
                     "initialStateCheck": false
                 },
                 {
@@ -314,7 +314,7 @@
                     "name": "",
                     "id": "354b2905-4737-4223-9fad-c8fa7aac698c",
                     "path": "<Mouse>/leftButton",
-                    "interactions": "Press",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "QuickAttack",

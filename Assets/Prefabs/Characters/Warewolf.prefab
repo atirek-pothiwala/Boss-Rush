@@ -200,6 +200,8 @@ MonoBehaviour:
   gravity: -20
   attacks:
   - state: 3
+    hitSound: {fileID: 8300000, guid: 730dfe9eb6f57c443ae7b47d0997aeec, type: 3}
+    bloodSound: {fileID: 8300000, guid: b5717df8ee5b457428c9550fd4a4c30b, type: 3}
     cooldown: 0.9
     range: 0.6
     damage: 40
@@ -208,6 +210,8 @@ MonoBehaviour:
     isAerial: 0
     isRun: 1
   - state: 5
+    hitSound: {fileID: 8300000, guid: 72a301c5b02e9924a82fbea8a82876dc, type: 3}
+    bloodSound: {fileID: 8300000, guid: 0eba9eba558aef14691de46e5bd3ace0, type: 3}
     cooldown: 0.7
     range: 0.6
     damage: 10
@@ -216,6 +220,8 @@ MonoBehaviour:
     isAerial: 0
     isRun: 0
   - state: 6
+    hitSound: {fileID: 8300000, guid: 730dfe9eb6f57c443ae7b47d0997aeec, type: 3}
+    bloodSound: {fileID: 8300000, guid: 254fad8e1ace3264db0809d68a1fd33b, type: 3}
     cooldown: 0.8
     range: 0.6
     damage: 30
@@ -224,6 +230,8 @@ MonoBehaviour:
     isAerial: 0
     isRun: 0
   - state: 7
+    hitSound: {fileID: 8300000, guid: 730dfe9eb6f57c443ae7b47d0997aeec, type: 3}
+    bloodSound: {fileID: 8300000, guid: 254fad8e1ace3264db0809d68a1fd33b, type: 3}
     cooldown: 1
     range: 0.6
     damage: 50

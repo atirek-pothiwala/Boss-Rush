@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     private Rigidbody2D rigidBody;
     private GameObject boss;
+    private SoundManager SoundManager => SoundManager.Instance;
     private PauseManager PauseManager => PauseManager.Instance;
     private HealthManager HealthManager => HealthManager.Instance;
     public bool IsPreventActions => PauseManager.IsGamePaused || HealthManager.IsGameOver;
@@ -183,7 +184,7 @@ public class PlayerController : MonoBehaviour
         if (currentAttack == null) yield break;
         if (HealthManager.IsHeroStaminaDepleted) yield break;
         if (HealthManager.HeroStamina < currentAttack.stamina) yield break;
-
+        
         animator.SetInteger(StateHash, (int) currentAttack.state);
         animator.SetTrigger(OnActionHash);
     }
@@ -196,6 +197,10 @@ public class PlayerController : MonoBehaviour
         if (distance <= currentAttack.range * RangeScale)
         {
             StartCoroutine(boss.GetComponent<BossController>().DamageRoutine(currentAttack));
+        } 
+        else
+        {
+            SoundManager.PlayBlankAttack();
         }
         yield return new WaitForSeconds(currentAttack.cooldown);
     }
@@ -203,6 +208,7 @@ public class PlayerController : MonoBehaviour
     public IEnumerator DamageRoutine(BossAttackConfig attack)
     {
         if (HealthManager.IsHeroDead) yield return null;
+        SoundManager.PlayOneShot(attack.hitSound);
 
         isBusy = true;
         Vector2 direction = LookingDirection();
@@ -223,6 +229,8 @@ public class PlayerController : MonoBehaviour
         if (HealthManager.IsHeroDead)
         {
             animator.SetInteger(StateHash, (int) PlayerState.Death);
+            SoundManager.PlayGameOver();
+            yield break;
         }
         
         yield return new WaitForSeconds(damageCooldown);

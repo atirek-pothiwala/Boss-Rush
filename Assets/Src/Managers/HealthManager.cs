@@ -8,7 +8,7 @@ public class HealthManager : MonoBehaviour
     [SerializeField] [Range(1, 2)] private int regenerationRate = 1;
     [SerializeField] [Range(0.5f, 2f)]  private float regenerationDelay = 1f;
 
-    bool regenerating;
+    bool isRegenerating;
 
     private void Awake()
     {
@@ -22,23 +22,16 @@ public class HealthManager : MonoBehaviour
 
     void Update()
     {
-        if (PauseManager.Instance.IsGamePaused)
-            return;
+        if (PauseManager.Instance.IsGamePaused) return;
+        if (IsGameOver) return;
+        if (isRegenerating) return;
 
-        if (IsGameOver)
-        {
-            UIManager.Instance.PauseMenu.SetActive(true);
-            UIManager.Instance.ResumeButton.SetActive(false);
-            return;
-        }
-
-        if (!regenerating)
-            StartCoroutine(RegenerateRoutine());
+        StartCoroutine(RegenerateRoutine());
     }
 
     IEnumerator RegenerateRoutine()
     {
-        regenerating = true;
+        isRegenerating = true;
 
         yield return new WaitForSeconds(regenerationDelay);
 
@@ -47,7 +40,7 @@ public class HealthManager : MonoBehaviour
 
         HeroStamina += regenerationRate;
 
-        regenerating = false;
+        isRegenerating = false;
     }
 
     public void ResetValues()
@@ -83,10 +76,17 @@ public class HealthManager : MonoBehaviour
         private set => UIManager.Instance.HeroStamina.value = Mathf.Clamp01(value / 100);
     }
 
-    public void UpdateBossHealth(int value) => BossHealth += value;
+    public void UpdateBossHealth(int value)
+    {
+        BossHealth += value;
+        if(BossHealth <= 0) BossStamina = 0;
+    }
     public void UpdateBossStamina(int value) => BossStamina += value;
 
-    public void UpdateHeroHealth(int value) => HeroHealth += value;
+    public void UpdateHeroHealth(int value) {
+        HeroHealth += value;
+        if(HeroHealth <= 0) HeroStamina = 0;
+    }
     public void UpdateHeroStamina(int value) => HeroStamina += value;
 
     public bool IsBossDead => BossHealth <= 0;

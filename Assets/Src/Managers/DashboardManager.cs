@@ -12,6 +12,7 @@ public class DashboardManager : MonoBehaviour
 
     public void Navigate(string name)
     {
+        SoundManager.Instance.PlayHardClick();
         if (name.Equals("Exit"))
         {
             Application.Quit();
@@ -28,6 +29,7 @@ public class DashboardManager : MonoBehaviour
 
     private void LoadEnvironment()
     {
+        SoundManager.Instance.PlayMenuMusic();
         foreach (var item in environmentObjects)
         {
             Instantiate(item);
