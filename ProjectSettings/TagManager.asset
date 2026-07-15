@@ -5,16 +5,24 @@ TagManager:
   serializedVersion: 3
   tags:
   - Ground
-  - Enemy
   - HeroHealth
   - HeroStamina
   - BossHealth
   - BossStamina
+  - Boss
+  - Hero
+  - GameMenu
+  - AttributeMenu
+  - Start
+  - Manager
+  - PauseMenu
+  - Lightening
+  - Rain
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Ground
+  - Obstacle
   - Water
   - UI
   - 
