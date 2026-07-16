@@ -8,5 +8,6 @@ public enum BossState {
     HeavyAttack = 6,
     SpecialAttack = 7,
     Hurt = 8,
-    Dead = 9
+    Dead = 9,
+    Scream = 10
 }

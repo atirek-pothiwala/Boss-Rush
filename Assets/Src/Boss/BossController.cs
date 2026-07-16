@@ -5,6 +5,7 @@ using UnityEngine;
 public class BossController : MonoBehaviour
 {
     private static readonly int StateHash = Animator.StringToHash("State");
+    private static readonly int IdleHash = Animator.StringToHash("Idle");
     private static readonly int MoveHash = Animator.StringToHash("Move");
     private static readonly int OnActionHash = Animator.StringToHash("OnAction");
 
@@ -184,13 +185,21 @@ public class BossController : MonoBehaviour
 
     private void UpdateMovementAnimation(BossState state)
     {
-        if(state == BossState.Run)
+        if(state == BossState.Run) 
+        {
             animator.SetFloat(MoveHash, 1f);
+        }
         else if(state == BossState.Walk)
+        {
             animator.SetFloat(MoveHash, 0.5f);
+        }
         else
+        {
             animator.SetFloat(MoveHash, 0f);
-        
+            bool hasIdle = animator.parameters.Any(anim => anim.nameHash == IdleHash);
+            if (hasIdle) animator.SetFloat(IdleHash, Random.Range(0, 1));   
+        }
+
         animator.SetInteger(StateHash, (int) state);
     }
 
