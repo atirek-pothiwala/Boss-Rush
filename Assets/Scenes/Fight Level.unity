@@ -2498,8 +2498,10 @@ MonoBehaviour:
   - {fileID: 5978646610019453248, guid: 0eb3d9e8a8469c14bab48f7bcb85c61b, type: 3}
   - {fileID: 2654600155237465203, guid: ee97669e8e9cf2c4a99a1b4582b0de8d, type: 3}
   heroes:
+  - {fileID: 787852330862547693, guid: 56eb1a031b69637439b4f72877bc71de, type: 3}
   - {fileID: 9194450898769902268, guid: 472516f6913d45c4fb754acd565f56dd, type: 3}
   bosses:
+  - {fileID: 7123106989260855529, guid: b4cb4d1a71c6fe94ca986705af7652ce, type: 3}
   - {fileID: 76638536979355917, guid: 18d38c396d11d954d8e371bc5b2dca72, type: 3}
 --- !u!1 &1726537119
 GameObject:

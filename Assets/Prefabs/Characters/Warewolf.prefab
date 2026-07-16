@@ -205,7 +205,7 @@ MonoBehaviour:
     cooldown: 0.9
     range: 0.6
     damage: 40
-    knockbackForce: 4
+    knockbackForce: 7
     stamina: 20
     isAerial: 0
     isRun: 1
@@ -215,7 +215,7 @@ MonoBehaviour:
     cooldown: 0.7
     range: 0.6
     damage: 10
-    knockbackForce: 3
+    knockbackForce: 5
     stamina: 5
     isAerial: 0
     isRun: 0
@@ -225,7 +225,7 @@ MonoBehaviour:
     cooldown: 0.8
     range: 0.6
     damage: 30
-    knockbackForce: 3.5
+    knockbackForce: 6
     stamina: 15
     isAerial: 0
     isRun: 0
@@ -235,7 +235,7 @@ MonoBehaviour:
     cooldown: 1
     range: 0.6
     damage: 50
-    knockbackForce: 4.5
+    knockbackForce: 7
     stamina: 25
     isAerial: 0
     isRun: 0

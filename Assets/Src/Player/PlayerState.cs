@@ -9,7 +9,7 @@ public enum PlayerState
     PowerUp = 6,
     Shield = 7,
     QuickAttack = 8,
-    PowerAttack = 9,
+    HeavyAttack = 9,
     SpecialAttack = 10
     
 }

@@ -35,9 +35,7 @@ public class HealthManager : MonoBehaviour
 
         yield return new WaitForSeconds(regenerationDelay);
 
-        BossHealth += regenerationRate;
         BossStamina += regenerationRate * 2;
-
         HeroStamina += regenerationRate;
 
         isRegenerating = false;

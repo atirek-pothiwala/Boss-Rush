@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour
         PlayerInputManager.OnMovementEvent += OnMovementEvent;
         PlayerInputManager.OnRunEvent += OnRunEvent;
         PlayerInputManager.OnQuickAttackEvent += OnQuickAttackEvent;
-        PlayerInputManager.OnPowerAttackEvent += OnPowerAttackEvent;
+        PlayerInputManager.OnPowerAttackEvent += OnHeavyAttackEvent;
         PlayerInputManager.OnJumpEvent += OnJumpEvent;
         PlayerInputManager.OnShieldEvent += OnShieldEvent;
         PlayerInputManager.OnPowerUpEvent += OnPowerUpEvent;
@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
         PlayerInputManager.OnMovementEvent -= OnMovementEvent;
         PlayerInputManager.OnRunEvent -= OnRunEvent;
         PlayerInputManager.OnQuickAttackEvent -= OnQuickAttackEvent;
-        PlayerInputManager.OnPowerAttackEvent -= OnPowerAttackEvent;
+        PlayerInputManager.OnPowerAttackEvent -= OnHeavyAttackEvent;
         PlayerInputManager.OnJumpEvent -= OnJumpEvent;
         PlayerInputManager.OnShieldEvent -= OnShieldEvent;
         PlayerInputManager.OnPowerUpEvent -= OnPowerUpEvent;
@@ -134,12 +134,12 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(AttackRoutine());
     }
 
-    void OnPowerAttackEvent(bool isAttacking)
+    void OnHeavyAttackEvent(bool isAttacking)
     {
         if (IsPreventActions) return;
         if (!isAttacking || !isGrounded) return;
 
-        currentAttack = attacks.First(attack => attack.state == PlayerState.PowerAttack);
+        currentAttack = attacks.First(attack => attack.state == PlayerState.HeavyAttack);
         StartCoroutine(AttackRoutine());
     }
     

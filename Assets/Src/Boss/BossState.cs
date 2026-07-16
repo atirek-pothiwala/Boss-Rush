@@ -5,7 +5,7 @@ public enum BossState {
     RunAttack = 3,
     JumpAttack = 4,
     QuickAttack = 5,
-    PowerAttack = 6,
+    HeavyAttack = 6,
     SpecialAttack = 7,
     Hurt = 8,
     Dead = 9

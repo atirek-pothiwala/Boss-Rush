@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 3213894821049052390}
   - component: {fileID: 6256501833701223725}
   - component: {fileID: 4401793343217237613}
-  - component: {fileID: 2914910364449569355}
-  - component: {fileID: 5119551013271872015}
+  - component: {fileID: 6970620819339260157}
+  - component: {fileID: 3747511446370313734}
   m_Layer: 0
   m_Name: Samurai
   m_TagString: Hero
@@ -182,7 +182,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &2914910364449569355
+--- !u!114 &6970620819339260157
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -202,26 +202,32 @@ MonoBehaviour:
   gravity: -20
   attacks:
   - state: 8
+    hitSound: {fileID: 8300000, guid: da8f5e8b2b08c2546976977b44695b6d, type: 3}
+    bloodSound: {fileID: 8300000, guid: 0eba9eba558aef14691de46e5bd3ace0, type: 3}
     cooldown: 0.5
-    range: 0.6
+    range: 0.65
     damage: 10
-    knockbackForce: 2
+    knockbackForce: 5
     stamina: 15
   - state: 9
+    hitSound: {fileID: 8300000, guid: 4e6f57f5555873d49b2d2f9a5ce0f11f, type: 3}
+    bloodSound: {fileID: 8300000, guid: 254fad8e1ace3264db0809d68a1fd33b, type: 3}
     cooldown: 1
     range: 0.6
     damage: 20
-    knockbackForce: 3
+    knockbackForce: 6
     stamina: 30
   - state: 10
+    hitSound: {fileID: 8300000, guid: 4e6f57f5555873d49b2d2f9a5ce0f11f, type: 3}
+    bloodSound: {fileID: 8300000, guid: b5717df8ee5b457428c9550fd4a4c30b, type: 3}
     cooldown: 1
     range: 0.6
     damage: 30
-    knockbackForce: 3.5
+    knockbackForce: 7
     stamina: 40
   shieldCooldown: 0.3
   damageCooldown: 0.5
---- !u!114 &5119551013271872015
+--- !u!114 &3747511446370313734
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

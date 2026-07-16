@@ -6,7 +6,7 @@ public class BossController : MonoBehaviour
 {
     private static readonly int StateHash = Animator.StringToHash("State");
     private static readonly int MoveHash = Animator.StringToHash("Move");
-    private static readonly int OnAttackHash = Animator.StringToHash("OnAttack");
+    private static readonly int OnActionHash = Animator.StringToHash("OnAction");
 
     // Components
     private Animator animator;
@@ -107,7 +107,7 @@ public class BossController : MonoBehaviour
             StopMovement();
         }
         animator.SetInteger(StateHash, (int) currentAttack.state);
-        animator.SetTrigger(OnAttackHash);
+        animator.SetTrigger(OnActionHash);
 
         yield return null;
     }
@@ -162,7 +162,11 @@ public class BossController : MonoBehaviour
         Vector2 direction = LookingDirection();
         rigidBody.AddForceX(-direction.x * attack.knockbackForce, ForceMode2D.Impulse);
         animator.SetInteger(StateHash, (int) BossState.Hurt);
+        animator.SetTrigger(OnActionHash);
+    }
 
+    public IEnumerator PostDamageRoutine()
+    {
         if(HealthManager.IsBossDead)
         {
             StopMovement();
