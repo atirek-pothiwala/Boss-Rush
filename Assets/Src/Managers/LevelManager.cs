@@ -47,6 +47,7 @@ public class LevelManager : MonoBehaviour
     public void MainMenu()
     {
         SoundManager.Instance.PlayHardClick();
+        SoundManager.Instance.PlayMenuMusic();
 
         Time.timeScale = 1;
         SceneManager.LoadScene("Main Menu");

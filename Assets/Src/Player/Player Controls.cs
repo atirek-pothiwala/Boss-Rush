@@ -289,7 +289,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""id"": ""6b910c92-07c8-455d-844b-9b5f3201fff2"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": ""Tap"",
+                    ""interactions"": ""Press"",
                     ""initialStateCheck"": false
                 },
                 {
