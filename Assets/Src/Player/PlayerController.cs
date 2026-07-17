@@ -81,7 +81,11 @@ public class PlayerController : MonoBehaviour
         }
         ApplyGravity();
         
-        if (HealthManager.IsGameOver) return;
+        if (HealthManager.IsGameOver)
+        {
+            if(HealthManager.IsBossDead) StopMovement();
+            return;
+        }
         if(isBusy) return;
         ApplyMovement();
     }
@@ -108,6 +112,11 @@ public class PlayerController : MonoBehaviour
         MoveAtDirection(moveInput.x, moveSpeed);
         LookAtDirection(moveInput.x);
         animator.SetFloat(MoveHash, moveAmount, transitionSpeed, Time.deltaTime);
+    }
+
+    void StopMovement()
+    {
+        animator.SetFloat(MoveHash, 0, transitionSpeed, Time.deltaTime);
     }
 
 
@@ -162,7 +171,7 @@ public class PlayerController : MonoBehaviour
         if (IsPreventActions) return;
         if (!isJumping || !isGrounded) return;
 
-        rigidBody.linearVelocityY = Mathf.Sqrt(jumpHeight * minVerticalVelocity * gravity);
+        isBusy = true;
         animator.SetInteger(StateHash, (int) PlayerState.Jump);
         animator.SetTrigger(OnActionHash);
     }
@@ -179,6 +188,15 @@ public class PlayerController : MonoBehaviour
 
 
     // Routines
+
+    public IEnumerator JumpRoutine()
+    {
+        isBusy = false;
+        rigidBody.linearVelocityY = Mathf.Sqrt(jumpHeight * minVerticalVelocity * gravity);
+        yield return null;
+    }
+
+
     public IEnumerator AttackRoutine()
     {
         if (currentAttack == null) yield break;

@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,7 +9,14 @@ public class UIManager : MonoBehaviour
     [Header("Menus")]
     public GameObject PauseMenu;
     public GameObject AttributeMenu;
+
+    [Header("Buttons")]
     public GameObject ResumeButton;
+    public GameObject NextBossButton;
+
+    [Header("Text")]
+    [SerializeField] private TextMeshProUGUI TextStatus;
+    [SerializeField] private TextMeshProUGUI textLevelName;
 
     [Header("Health")]
     public Slider BossHealth;
@@ -22,15 +30,37 @@ public class UIManager : MonoBehaviour
 
         PauseMenu.SetActive(false);
         AttributeMenu.SetActive(true);
+        textLevelName.text = Constants.Instance.BossName();
     }
 
     void Update()
     {
-        if (HealthManager.Instance.IsGameOver)
+        if(!HealthManager.Instance.IsGameOver && !PauseManager.Instance.IsGamePaused)
         {
-            PauseMenu.SetActive(true);
-            ResumeButton.SetActive(false);
+            if(!PauseMenu.activeSelf) return;
+            PauseMenu.SetActive(false);
             return;
+        }
+
+        if(PauseMenu.activeSelf) return;
+        PauseMenu.SetActive(true);
+        if(PauseManager.Instance.IsGamePaused)
+        {
+            ResumeButton.SetActive(true);
+            TextStatus.text = "Paused";
+            NextBossButton.SetActive(false);
+        }
+        else if (HealthManager.Instance.IsHeroDead)
+        {
+            ResumeButton.SetActive(false);
+            TextStatus.text = "Game Over";
+            NextBossButton.SetActive(false);
+        } 
+        else if (HealthManager.Instance.IsBossDead)
+        {
+            ResumeButton.SetActive(false);
+            TextStatus.text = Constants.Instance.IsNextLevel ? "Victory" : "Congratulations";
+            NextBossButton.SetActive(Constants.Instance.IsNextLevel);
         }
     }
 }

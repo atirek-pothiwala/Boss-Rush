@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
@@ -23,7 +22,7 @@ public class LevelManager : MonoBehaviour
     private void LoadFighters()
     {
         GameObject hero = Instantiate(heroes[0]);
-        GameObject boss = Instantiate(bosses[0]);
+        GameObject boss = Instantiate(bosses[Constants.Instance.CurrentLevel]);
         CameraManager.Instance.Initialize(hero.transform, boss.transform);
     }
 
@@ -34,22 +33,5 @@ public class LevelManager : MonoBehaviour
         {
             Instantiate(item);
         }
-    }
-
-    public void RestartGame()
-    {
-        SoundManager.Instance.PlayHardClick();
-
-        Time.timeScale = 1;
-        SceneManager.LoadScene("Fight Level");
-    }
-
-    public void MainMenu()
-    {
-        SoundManager.Instance.PlayHardClick();
-        SoundManager.Instance.PlayMenuMusic();
-
-        Time.timeScale = 1;
-        SceneManager.LoadScene("Main Menu");
     }
 }
