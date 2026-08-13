@@ -894,6 +894,10 @@ MonoBehaviour:
   sfxSource: {fileID: 860511310}
   menuMusic: {fileID: 8300000, guid: a8b1385b50539174ba0ec9fa1ba52b67, type: 3}
   battleMusic: {fileID: 8300000, guid: 10c9cebbef92b674497457b67d876a0f, type: 3}
+  bossBattleThemes:
+  - {fileID: 8300000, guid: 91ae5d0c7c3268540bf30751ce69ad55, type: 3}
+  - {fileID: 8300000, guid: f9be04a5c91c2234a9b1c84eaf052b9a, type: 3}
+  - {fileID: 8300000, guid: ada7dc3aac52b7e4b8208fafa7859587, type: 3}
   softClick: {fileID: 8300000, guid: c2bf330dc1b20eb479ff23389a30a505, type: 3}
   normalClick: {fileID: 8300000, guid: 59de39b181d828b43862206e1525a4f6, type: 3}
   hardClick: {fileID: 8300000, guid: 0fc760cff7240d14f95567a03db034df, type: 3}

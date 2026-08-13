@@ -230,5 +230,15 @@ MonoBehaviour:
     stamina: 25
     isAerial: 0
     isRun: 0
+  - state: 10
+    hitSound: {fileID: 8300000, guid: 72a301c5b02e9924a82fbea8a82876dc, type: 3}
+    bloodSound: {fileID: 8300000, guid: b5717df8ee5b457428c9550fd4a4c30b, type: 3}
+    cooldown: 1.2
+    range: 0.85
+    damage: 35
+    knockbackForce: 8
+    stamina: 20
+    isAerial: 0
+    isRun: 0
   retreatDuration: 0.8
   damageCooldown: 1

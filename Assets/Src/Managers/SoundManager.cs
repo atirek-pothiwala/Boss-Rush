@@ -11,6 +11,7 @@ public class SoundManager : MonoBehaviour
     [Header("Music")]
     [SerializeField] private AudioClip menuMusic;
     [SerializeField] private AudioClip battleMusic;
+    [SerializeField] private AudioClip[] bossBattleThemes;
 
     [Header("UI")]
     [SerializeField] private AudioClip softClick;
@@ -35,14 +36,37 @@ public class SoundManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    public void ApplySavedVolumes()
+    {
+        SetMusicVolume(GameSave.MusicVolume);
+        SetSfxVolume(GameSave.SfxVolume);
+    }
+
+    public void SetMusicVolume(float volume)
+    {
+        if (musicSource != null)
+        {
+            musicSource.volume = volume;
+        }
+    }
+
+    public void SetSfxVolume(float volume)
+    {
+        if (sfxSource != null)
+        {
+            sfxSource.volume = volume;
+        }
+    }
+
     public void PlayMusic(AudioClip clip, bool loop = true, float volume = 1.0f)
     {
+        if (clip == null) return;
         if (musicSource.clip == clip && musicSource.isPlaying)
             return;
 
         musicSource.clip = clip;
         musicSource.loop = loop;
-        musicSource.volume = volume;
+        musicSource.volume = volume * GameSave.MusicVolume;
         musicSource.Play();
     }
 
@@ -53,7 +77,8 @@ public class SoundManager : MonoBehaviour
 
     public void PlayOneShot(AudioClip clip)
     {
-        sfxSource.PlayOneShot(clip);
+        if (clip == null) return;
+        sfxSource.PlayOneShot(clip, GameSave.SfxVolume);
     }
 
     public void PlayBlankAttack() => PlayOneShot(blankAttack);
@@ -63,6 +88,22 @@ public class SoundManager : MonoBehaviour
     public void PlayVictory() => PlayOneShot(victory);
     public void PlayGameOver() => PlayOneShot(gameOver);
 
-    public void PlayMenuMusic() => PlayMusic(menuMusic, true);
-    public void PlayBattleMusic() => PlayMusic(battleMusic, true, 0.5f);
+    public void PlayMenuMusic() => PlayMusic(menuMusic, true, 1f);
+
+    public void PlayBattleMusic() => PlayBattleMusicForLevel(0);
+
+    public void PlayBattleMusicForLevel(int level)
+    {
+        AudioClip clip = battleMusic;
+        if (bossBattleThemes != null && bossBattleThemes.Length > 0)
+        {
+            int index = Mathf.Clamp(level, 0, bossBattleThemes.Length - 1);
+            if (bossBattleThemes[index] != null)
+            {
+                clip = bossBattleThemes[index];
+            }
+        }
+
+        PlayMusic(clip, true, 0.5f);
+    }
 }

@@ -9,7 +9,7 @@ public class PlayerInputManager : MonoBehaviour
     public static event System.Action<bool> OnJumpEvent;
     public static event System.Action<bool> OnQuickAttackEvent;
     public static event System.Action<bool> OnPowerAttackEvent;
-    public static event System.Action<bool> OnPowerUpEvent;
+    public static event System.Action<bool> OnSpecialAttackEvent;
     public static event System.Action<bool> OnPauseEvent;
 
     void OnEnable()
@@ -18,6 +18,7 @@ public class PlayerInputManager : MonoBehaviour
         {
             playerControls = new PlayerControls();
             playerControls.PlayerMovement.Movement.performed += ctx => OnMovementEvent(ctx.ReadValue<Vector2>());
+            playerControls.PlayerMovement.Movement.canceled += _ => OnMovementEvent(Vector2.zero);
 
             playerControls.PlayerActions.Run.performed += ctx => OnRunEvent(true);
             playerControls.PlayerActions.Run.canceled += ctx => OnRunEvent(false);
@@ -31,14 +32,13 @@ public class PlayerInputManager : MonoBehaviour
             playerControls.PlayerActions.PowerAttack.performed += ctx => OnPowerAttackEvent(true);
             playerControls.PlayerActions.PowerAttack.canceled += ctx => OnPowerAttackEvent(false);
 
-            playerControls.PlayerActions.PowerUp.performed += ctx => OnPowerUpEvent(true);
-            playerControls.PlayerActions.PowerUp.canceled += ctx => OnPowerUpEvent(false);
+            playerControls.PlayerActions.PowerUp.performed += ctx => OnSpecialAttackEvent(true);
+            playerControls.PlayerActions.PowerUp.canceled += ctx => OnSpecialAttackEvent(false);
 
             playerControls.PlayerActions.Shield.performed += ctx => OnShieldEvent(true);
             playerControls.PlayerActions.Shield.canceled += ctx => OnShieldEvent(false);
 
             playerControls.OtherActions.Pause.performed += ctx => OnPauseEvent(true);
-            playerControls.OtherActions.Pause.canceled += ctx => OnPauseEvent(false);
         }
         playerControls.Enable();
     }
@@ -48,4 +48,3 @@ public class PlayerInputManager : MonoBehaviour
         playerControls.Disable();
     }
 }
-

@@ -37,21 +37,45 @@ public class Constants
     public void ResetProgress()
     {
         level = 0;
+        GameSave.ClearRun();
+    }
+
+    public void LoadProgress(int heroIndex, int savedLevel)
+    {
+        SelectHero(heroIndex);
+        level = Mathf.Clamp(savedLevel, 0, maxLevel);
     }
 
     public void NextLevel()
     {
         if (level + 1 > maxLevel) return;
         level += 1;
+        GameSave.SaveRun(selectedHeroIndex, level);
+    }
+
+    public void PersistRun()
+    {
+        GameSave.SaveRun(selectedHeroIndex, level);
     }
 
     public string BossName()
     {
-        switch(level) {
+        return BossNameForLevel(level);
+    }
+
+    public string NextBossName()
+    {
+        if (!IsNextLevel) return "";
+        return BossNameForLevel(level + 1);
+    }
+
+    private static string BossNameForLevel(int bossLevel)
+    {
+        switch(bossLevel) {
             case 0:
-            return "Minatour";
+            return "Minotaur";
             case 1:
-            return "Warewolf";
+            return "Werewolf";
             case 2:
             return "Gorgon";
         }

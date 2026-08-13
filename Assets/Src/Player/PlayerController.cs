@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
     [Header("Attack Settings")]
     [SerializeField] private PlayerAttackConfig[] attacks;
     private PlayerAttackConfig currentAttack;
+    private float damageMultiplier = 1f;
     private float lastShieldTime = 0f;
     [SerializeField] [Range(0.1f, 0.5f)] float shieldCooldown = 0.25f;
     private bool IsShieldEngaged => lastShieldTime + shieldCooldown >= Time.time;
@@ -50,7 +51,7 @@ public class PlayerController : MonoBehaviour
         PlayerInputManager.OnPowerAttackEvent += OnHeavyAttackEvent;
         PlayerInputManager.OnJumpEvent += OnJumpEvent;
         PlayerInputManager.OnShieldEvent += OnShieldEvent;
-        PlayerInputManager.OnPowerUpEvent += OnPowerUpEvent;
+        PlayerInputManager.OnSpecialAttackEvent += OnSpecialAttackEvent;
     }
 
     void OnDisable()
@@ -61,7 +62,7 @@ public class PlayerController : MonoBehaviour
         PlayerInputManager.OnPowerAttackEvent -= OnHeavyAttackEvent;
         PlayerInputManager.OnJumpEvent -= OnJumpEvent;
         PlayerInputManager.OnShieldEvent -= OnShieldEvent;
-        PlayerInputManager.OnPowerUpEvent -= OnPowerUpEvent;
+        PlayerInputManager.OnSpecialAttackEvent -= OnSpecialAttackEvent;
     }
 
     void Awake()
@@ -137,7 +138,7 @@ public class PlayerController : MonoBehaviour
     void OnQuickAttackEvent(bool isAttacking)
     {
         if (IsPreventActions) return;
-        if (!isAttacking || !isGrounded) return;
+        if (!isAttacking || !isGrounded || isBusy) return;
 
         currentAttack = attacks.First(attack => attack.state == PlayerState.QuickAttack);
         StartCoroutine(AttackRoutine());
@@ -146,7 +147,7 @@ public class PlayerController : MonoBehaviour
     void OnHeavyAttackEvent(bool isAttacking)
     {
         if (IsPreventActions) return;
-        if (!isAttacking || !isGrounded) return;
+        if (!isAttacking || !isGrounded || isBusy) return;
 
         currentAttack = attacks.First(attack => attack.state == PlayerState.HeavyAttack);
         StartCoroutine(AttackRoutine());
@@ -155,15 +156,17 @@ public class PlayerController : MonoBehaviour
     void OnSpecialAttackEvent(bool isAttacking)
     {
         if (IsPreventActions) return;
-        if (!isAttacking || !isGrounded) return;
+        if (!isAttacking || !isGrounded || isBusy) return;
 
         currentAttack = attacks.First(attack => attack.state == PlayerState.SpecialAttack);
         StartCoroutine(AttackRoutine());
     }
 
-    void OnPowerUpEvent(bool isPoweringUp)
+    public void ApplyStatModifiers(float walkSpeed, float runSpeed, float damageMultiplier)
     {
-        if (IsPreventActions) return;
+        this.walkSpeed = walkSpeed;
+        this.runSpeed = runSpeed;
+        this.damageMultiplier = damageMultiplier;
     }
 
     void OnJumpEvent(bool isJumping)
@@ -200,11 +203,14 @@ public class PlayerController : MonoBehaviour
     public IEnumerator AttackRoutine()
     {
         if (currentAttack == null) yield break;
+        if (isBusy) yield break;
         if (HealthManager.IsHeroStaminaDepleted) yield break;
         if (HealthManager.HeroStamina < currentAttack.stamina) yield break;
-        
+
+        isBusy = true;
         animator.SetInteger(StateHash, (int) currentAttack.state);
         animator.SetTrigger(OnActionHash);
+        yield return null;
     }
 
     public IEnumerator PostAttackRoutine()
@@ -214,16 +220,19 @@ public class PlayerController : MonoBehaviour
         float distance = DistanceToBoss();
         if (distance <= currentAttack.range * RangeScale)
         {
-            StartCoroutine(boss.GetComponent<BossController>().DamageRoutine(currentAttack));
-        } 
+            int effectiveDamage = Mathf.RoundToInt(currentAttack.damage * damageMultiplier);
+            StartCoroutine(boss.GetComponent<BossController>().DamageRoutine(currentAttack, effectiveDamage));
+        }
         else
         {
             SoundManager.PlayBlankAttack();
         }
+
         yield return new WaitForSeconds(currentAttack.cooldown);
+        isBusy = false;
     }
 
-    public IEnumerator DamageRoutine(BossAttackConfig attack)
+    public IEnumerator DamageRoutine(BossAttackConfig attack, int? damageOverride = null)
     {
         if (HealthManager.IsHeroDead) yield return null;
         SoundManager.PlayOneShot(attack.hitSound);
@@ -238,7 +247,7 @@ public class PlayerController : MonoBehaviour
         } 
         else
         {
-            HealthManager.UpdateHeroHealth(-attack.damage);
+            HealthManager.UpdateHeroHealth(-(damageOverride ?? attack.damage));
             rigidBody.AddForceX(-direction.x * attack.knockbackForce, ForceMode2D.Impulse);
             animator.SetInteger(StateHash, (int) PlayerState.Hurt);
             animator.SetTrigger(OnActionHash);
