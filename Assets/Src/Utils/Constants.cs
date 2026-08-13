@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class Constants
@@ -18,13 +17,27 @@ public class Constants
         }
     }
 
+    public static readonly string[] HeroNames = { "Samurai", "Shinobi", "Fighter" };
+
     private Constants() { }
 
     private int level = 0;
+    private int selectedHeroIndex = 0;
     private const int maxLevel = 2;
 
     public int CurrentLevel => level;
+    public int SelectedHeroIndex => selectedHeroIndex;
     public bool IsNextLevel => level + 1 <= maxLevel;
+
+    public void SelectHero(int heroIndex)
+    {
+        selectedHeroIndex = Mathf.Clamp(heroIndex, 0, HeroNames.Length - 1);
+    }
+
+    public void ResetProgress()
+    {
+        level = 0;
+    }
 
     public void NextLevel()
     {
@@ -43,5 +56,10 @@ public class Constants
             return "Gorgon";
         }
         return "";
+    }
+
+    public string SelectedHeroName()
+    {
+        return HeroNames[selectedHeroIndex];
     }
 }
