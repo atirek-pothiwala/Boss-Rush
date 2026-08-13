@@ -59,9 +59,25 @@ Open the project in Unity Hub and load `Assets/Scenes/Main Menu.unity`.
 
 Use the **Windows** build profile under `Assets/Settings/Build Profiles/`.
 
-### WebGL
+### WebGL / GitHub Pages
 
-Use the **WebGL** build profile. Output can be hosted on GitHub Pages or any static file host.
+The game deploys automatically to GitHub Pages when changes are pushed to `main`.
+
+**Live URL:** https://atirek-pothiwala.github.io/Boss-Rush/
+
+#### One-time setup (repository owner)
+
+1. Add GitHub Actions secrets:
+   - `UNITY_EMAIL` and `UNITY_PASSWORD` (Unity ID), **or**
+   - `UNITY_LICENSE` (manual activation file contents)
+2. In the repo go to **Settings → Pages → Build and deployment → Source** and choose **GitHub Actions**.
+3. Merge to `main` or run the **Deploy WebGL to GitHub Pages** workflow manually from the Actions tab.
+
+The workflow builds WebGL with the `GithubPages` template (subdirectory-safe paths) and publishes via `actions/deploy-pages`.
+
+#### Local WebGL build
+
+Use the **WebGL** build profile under `Assets/Settings/Build Profiles/`.
 
 ```bash
 # Cloud Agent / CI validation (requires Unity license secrets)
