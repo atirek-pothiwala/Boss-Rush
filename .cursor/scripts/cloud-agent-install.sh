@@ -5,9 +5,7 @@ cd /workspace
 
 git lfs pull
 
-if ! head -c 8 Assets/Art/Logo.png | grep -q $'^version '; then
-  :
-else
+if head -c 8 Assets/Art/Logo.png | grep -q $'^version '; then
   echo "Git LFS assets were not pulled." >&2
   exit 1
 fi
@@ -37,6 +35,7 @@ elif [[ -n "${UNITY_EMAIL:-}" && -n "${UNITY_PASSWORD:-}" ]]; then
     serial_args=(-serial)
   fi
 
+  set +e
   "$UNITY_BIN" \
     -batchmode \
     -nographics \
@@ -45,22 +44,39 @@ elif [[ -n "${UNITY_EMAIL:-}" && -n "${UNITY_PASSWORD:-}" ]]; then
     -username "$UNITY_EMAIL" \
     -password "$UNITY_PASSWORD" \
     -logFile /workspace/Logs/license-activation.log
-  has_license=true
+  activation_status=$?
+  set -e
+
+  if [[ "$activation_status" -eq 0 ]] \
+    && ! grep -q "No valid Unity Editor license found" /workspace/Logs/license-activation.log; then
+    has_license=true
+  else
+    echo "Unity license activation unavailable; continuing without batchmode import." >&2
+    echo "See /workspace/Logs/license-activation.log for details." >&2
+  fi
 fi
 
 if [[ "$has_license" == true ]]; then
+  set +e
   "$UNITY_BIN" \
     -batchmode \
     -nographics \
     -quit \
     -projectPath /workspace \
     -logFile /workspace/Logs/import.log
+  import_status=$?
+  set -e
+
+  if [[ "$import_status" -ne 0 ]]; then
+    echo "Unity import failed with exit code $import_status." >&2
+    exit 1
+  fi
 
   if grep -E "error CS[0-9]+" /workspace/Logs/import.log; then
     echo "Unity import reported compile errors." >&2
     exit 1
   fi
 else
-  echo "Skipping Unity batchmode import: no license credentials configured."
-  echo "Add UNITY_LICENSE or UNITY_EMAIL/UNITY_PASSWORD to enable compile validation."
+  echo "Skipping Unity batchmode import: no usable Unity license configured."
+  echo "Add UNITY_LICENSE or valid UNITY_EMAIL/UNITY_PASSWORD to enable compile validation."
 fi
