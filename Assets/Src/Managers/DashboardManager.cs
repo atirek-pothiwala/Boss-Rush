@@ -7,6 +7,7 @@ public class DashboardManager : MonoBehaviour
 {
     [SerializeField] private GameObject[] environmentObjects;
     [SerializeField] private GameObject startButton;
+    [SerializeField] private Sprite[] heroPortraits;
 
     private GameObject heroSelectionPanel;
     private TMP_FontAsset menuFont;
@@ -90,37 +91,98 @@ public class DashboardManager : MonoBehaviour
         var panelRect = heroSelectionPanel.GetComponent<RectTransform>();
         Stretch(panelRect);
 
-        var title = CreateLabel(heroSelectionPanel.transform, "Choose Your Hero", 42, new Vector2(0, 120));
+        var title = CreateLabel(heroSelectionPanel.transform, "Choose Your Hero", 42, new Vector2(0, 150));
         title.fontStyle = FontStyles.Bold;
 
-        var buttonY = 35f;
+        var cardPositions = new[] { new Vector2(-170, 10), new Vector2(0, 10), new Vector2(170, 10) };
         for (var i = 0; i < Constants.HeroNames.Length; i++)
         {
             var heroIndex = i;
-            CreateHeroButton(
+            var portrait = heroPortraits != null && i < heroPortraits.Length ? heroPortraits[i] : null;
+            CreateHeroCard(
                 heroSelectionPanel.transform,
                 Constants.HeroNames[i],
-                new Vector2(0, buttonY - i * 70),
+                portrait,
+                cardPositions[i],
                 () => SelectHero(heroIndex));
         }
 
-        CreateHeroButton(
+        CreateTextButton(
             heroSelectionPanel.transform,
             "Back",
             new Vector2(0, -170),
+            new Vector2(220, 42),
             BackToMainMenu);
 
         heroSelectionPanel.SetActive(false);
     }
 
-    private void CreateHeroButton(Transform parent, string label, Vector2 position, UnityEngine.Events.UnityAction onClick)
+    private void CreateHeroCard(
+        Transform parent,
+        string label,
+        Sprite portrait,
+        Vector2 position,
+        UnityEngine.Events.UnityAction onClick)
+    {
+        var cardObject = CreateUiObject("Card" + label, parent);
+        var rect = cardObject.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0.5f, 0.5f);
+        rect.anchorMax = new Vector2(0.5f, 0.5f);
+        rect.pivot = new Vector2(0.5f, 0.5f);
+        rect.sizeDelta = new Vector2(130, 155);
+        rect.anchoredPosition = position;
+
+        var background = cardObject.AddComponent<Image>();
+        background.color = new Color(0f, 0f, 0f, 0.35f);
+        background.raycastTarget = true;
+
+        var button = cardObject.AddComponent<Button>();
+        button.targetGraphic = background;
+        button.onClick.AddListener(onClick);
+
+        var portraitObject = CreateUiObject("Portrait", cardObject.transform);
+        var portraitRect = portraitObject.GetComponent<RectTransform>();
+        portraitRect.anchorMin = new Vector2(0.5f, 1f);
+        portraitRect.anchorMax = new Vector2(0.5f, 1f);
+        portraitRect.pivot = new Vector2(0.5f, 1f);
+        portraitRect.sizeDelta = new Vector2(96, 96);
+        portraitRect.anchoredPosition = new Vector2(0, -12);
+
+        var portraitImage = portraitObject.AddComponent<Image>();
+        portraitImage.sprite = portrait;
+        portraitImage.preserveAspect = true;
+        portraitImage.raycastTarget = false;
+
+        var labelObject = CreateUiObject("Label", cardObject.transform);
+        var labelRect = labelObject.GetComponent<RectTransform>();
+        labelRect.anchorMin = new Vector2(0f, 0f);
+        labelRect.anchorMax = new Vector2(1f, 0f);
+        labelRect.pivot = new Vector2(0.5f, 0f);
+        labelRect.sizeDelta = new Vector2(0, 36);
+        labelRect.anchoredPosition = new Vector2(0, 8);
+
+        var text = labelObject.AddComponent<TextMeshProUGUI>();
+        text.text = label;
+        text.font = menuFont;
+        text.fontSize = 24;
+        text.alignment = TextAlignmentOptions.Center;
+        text.color = Color.white;
+        text.raycastTarget = false;
+    }
+
+    private void CreateTextButton(
+        Transform parent,
+        string label,
+        Vector2 position,
+        Vector2 size,
+        UnityEngine.Events.UnityAction onClick)
     {
         var buttonObject = CreateUiObject("Btn" + label, parent);
         var rect = buttonObject.GetComponent<RectTransform>();
         rect.anchorMin = new Vector2(0.5f, 0.5f);
         rect.anchorMax = new Vector2(0.5f, 0.5f);
         rect.pivot = new Vector2(0.5f, 0.5f);
-        rect.sizeDelta = new Vector2(220, 42);
+        rect.sizeDelta = size;
         rect.anchoredPosition = position;
 
         var image = buttonObject.AddComponent<Image>();

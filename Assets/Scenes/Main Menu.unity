@@ -606,6 +606,10 @@ MonoBehaviour:
   - {fileID: 4062984994914010871, guid: f1efdc75cfc97ab41ab33332389b123e, type: 3}
   - {fileID: 2654600155237465203, guid: ee97669e8e9cf2c4a99a1b4582b0de8d, type: 3}
   startButton: {fileID: 182614217}
+  heroPortraits:
+  - {fileID: 4723107735738678597, guid: 4ebfe91445c85ce4ea208ad1f2c14ce4, type: 3}
+  - {fileID: 4723107735738678597, guid: 90d5ed9b42829f742bfd5350e92aa7d7, type: 3}
+  - {fileID: 4723107735738678597, guid: 9df8bf1928a4e64449c32c15c49b5910, type: 3}
 --- !u!1 &643508677
 GameObject:
   m_ObjectHideFlags: 0
