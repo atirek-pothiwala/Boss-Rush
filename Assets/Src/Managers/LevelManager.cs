@@ -21,7 +21,8 @@ public class LevelManager : MonoBehaviour
 
     private void LoadFighters()
     {
-        GameObject hero = Instantiate(heroes[0]);
+        int heroIndex = Mathf.Clamp(Constants.Instance.SelectedHeroIndex, 0, heroes.Length - 1);
+        GameObject hero = Instantiate(heroes[heroIndex]);
         GameObject boss = Instantiate(bosses[Constants.Instance.CurrentLevel]);
         CameraManager.Instance.Initialize(hero.transform, boss.transform);
     }
