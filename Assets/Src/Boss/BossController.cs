@@ -20,6 +20,8 @@ public class BossController : MonoBehaviour
     private bool isGrounded = true;
     private bool isBusy = false;
     private bool isAttackInterrupted = false;
+    private bool isEnraged = false;
+    private float damageMultiplier = 1f;
 
     [Header("Movement Settings")]
     [SerializeField] [Range(1.5f, 2.5f)] private float walkSpeed = 2f;
@@ -54,6 +56,7 @@ public class BossController : MonoBehaviour
             return;
         }
         ApplyGravity();
+        CheckEnrage();
 
         if (HealthManager.IsGameOver) return;
         if (isBusy) return;
@@ -73,9 +76,34 @@ public class BossController : MonoBehaviour
             rigidBody.linearVelocityY += gravity * Time.deltaTime;
     }
 
+    private void CheckEnrage()
+    {
+        if (isEnraged || HealthManager.IsBossDead) return;
+        if (HealthManager.BossHealthPercent > 0.5f) return;
+
+        isEnraged = true;
+        damageMultiplier = 1.35f;
+        walkSpeed *= 1.2f;
+        runSpeed *= 1.2f;
+        retreatDuration *= 0.85f;
+
+        animator.SetInteger(StateHash, (int) BossState.Scream);
+        animator.SetTrigger(OnActionHash);
+    }
+
     private void DecideAttack() {
         var filterAttacks = attacks.Where(attack => attack.stamina <= HealthManager.BossStamina).ToArray();
         if (filterAttacks.Length == 0) return;
+
+        if (isEnraged)
+        {
+            var screamAttacks = filterAttacks.Where(attack => attack.state == BossState.Scream).ToArray();
+            if (screamAttacks.Length > 0 && Random.value < 0.35f)
+            {
+                currentAttack = screamAttacks[Random.Range(0, screamAttacks.Length)];
+                return;
+            }
+        }
 
         int attackIndex = Random.Range(0, filterAttacks.Length);
         currentAttack = filterAttacks[attackIndex];
@@ -118,7 +146,8 @@ public class BossController : MonoBehaviour
         if (isAttackInterrupted) yield break;
         HealthManager.UpdateBossStamina(-currentAttack.stamina);
 
-        StartCoroutine(hero.GetComponent<PlayerController>().DamageRoutine(currentAttack));
+        int effectiveDamage = Mathf.RoundToInt(currentAttack.damage * damageMultiplier);
+        StartCoroutine(hero.GetComponent<PlayerController>().DamageRoutine(currentAttack, effectiveDamage));
         yield return new WaitForSeconds(currentAttack.cooldown);
         yield return StartCoroutine(RetreatRoutine());
     }
@@ -149,7 +178,7 @@ public class BossController : MonoBehaviour
         isBusy = false;
     }
 
-    public IEnumerator DamageRoutine(PlayerAttackConfig attack)
+    public IEnumerator DamageRoutine(PlayerAttackConfig attack, int? damageOverride = null)
     {
         if (HealthManager.IsBossDead) yield break;
         SoundManager.PlayOneShot(attack.hitSound);
@@ -158,7 +187,7 @@ public class BossController : MonoBehaviour
         isAttackInterrupted = true;
         isBusy = true;
 
-        HealthManager.UpdateBossHealth(-attack.damage);
+        HealthManager.UpdateBossHealth(-(damageOverride ?? attack.damage));
         
         Vector2 direction = LookingDirection();
         rigidBody.AddForceX(-direction.x * attack.knockbackForce, ForceMode2D.Impulse);
@@ -259,5 +288,7 @@ public class BossController : MonoBehaviour
         Gizmos.color = Color.green;
         Gizmos.DrawLine(bossPos, playerPos);
     }
+
+    public bool IsEnraged => isEnraged;
 
 }

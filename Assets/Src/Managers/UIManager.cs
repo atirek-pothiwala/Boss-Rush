@@ -53,13 +53,20 @@ public class UIManager : MonoBehaviour
         else if (HealthManager.Instance.IsHeroDead)
         {
             ResumeButton.SetActive(false);
-            TextStatus.text = "Game Over";
+            TextStatus.text = $"{Constants.Instance.SelectedHeroName()} was defeated by {Constants.Instance.BossName()}";
             NextBossButton.SetActive(false);
         } 
         else if (HealthManager.Instance.IsBossDead)
         {
             ResumeButton.SetActive(false);
-            TextStatus.text = Constants.Instance.IsNextLevel ? "Victory" : "Congratulations";
+            if (Constants.Instance.IsNextLevel)
+            {
+                TextStatus.text = $"{Constants.Instance.BossName()} defeated!\nNext boss: {Constants.Instance.NextBossName()}";
+            }
+            else
+            {
+                TextStatus.text = $"Victory!\n{Constants.Instance.SelectedHeroName()} conquered the Boss Rush!";
+            }
             NextBossButton.SetActive(Constants.Instance.IsNextLevel);
         }
     }

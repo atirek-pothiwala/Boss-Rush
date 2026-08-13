@@ -199,7 +199,7 @@ MonoBehaviour:
   jumpHeight: 0.5
   gravity: -20
   attacks:
-  - state: 3
+  - state: 4
     hitSound: {fileID: 8300000, guid: 730dfe9eb6f57c443ae7b47d0997aeec, type: 3}
     bloodSound: {fileID: 8300000, guid: b5717df8ee5b457428c9550fd4a4c30b, type: 3}
     cooldown: 0.9
@@ -207,7 +207,7 @@ MonoBehaviour:
     damage: 40
     knockbackForce: 7
     stamina: 20
-    isAerial: 0
+    isAerial: 1
     isRun: 1
   - state: 5
     hitSound: {fileID: 8300000, guid: 72a301c5b02e9924a82fbea8a82876dc, type: 3}

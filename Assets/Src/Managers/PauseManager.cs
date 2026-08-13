@@ -22,8 +22,10 @@ public class PauseManager : MonoBehaviour
         PlayerInputManager.OnPauseEvent -= OnPause;
     }
 
-    void OnPause(bool value)
+    void OnPause(bool isPressed)
     {
+        if (!isPressed) return;
+
         if (IsGamePaused)
             ResumeGame();
         else
@@ -62,6 +64,7 @@ public class PauseManager : MonoBehaviour
         SoundManager.Instance.PlayHardClick();
 
         Time.timeScale = 1;
+        Constants.Instance.ResetProgress();
         SceneManager.LoadScene("Fight Level");
     }
 
