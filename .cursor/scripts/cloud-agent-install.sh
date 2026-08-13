@@ -3,7 +3,6 @@ set -euo pipefail
 
 cd /workspace
 
-git lfs install --local
 git lfs pull
 
 mkdir -p /workspace/Logs /workspace/Builds
@@ -18,9 +17,11 @@ if [[ ! -x "$UNITY_BIN" ]]; then
   exit 1
 fi
 
+has_license=false
 if [[ -n "${UNITY_LICENSE:-}" ]]; then
   mkdir -p "$HOME/.local/share/unity3d/Unity"
   printf '%s' "$UNITY_LICENSE" > "$HOME/.local/share/unity3d/Unity/Unity_lic.ulf"
+  has_license=true
 elif [[ -n "${UNITY_EMAIL:-}" && -n "${UNITY_PASSWORD:-}" ]]; then
   serial_args=()
   if [[ -n "${UNITY_SERIAL:-}" ]]; then
@@ -37,16 +38,22 @@ elif [[ -n "${UNITY_EMAIL:-}" && -n "${UNITY_PASSWORD:-}" ]]; then
     -username "$UNITY_EMAIL" \
     -password "$UNITY_PASSWORD" \
     -logFile /workspace/Logs/license-activation.log
+  has_license=true
 fi
 
-"$UNITY_BIN" \
-  -batchmode \
-  -nographics \
-  -quit \
-  -projectPath /workspace \
-  -logFile /workspace/Logs/import.log
+if [[ "$has_license" == true ]]; then
+  "$UNITY_BIN" \
+    -batchmode \
+    -nographics \
+    -quit \
+    -projectPath /workspace \
+    -logFile /workspace/Logs/import.log
 
-if grep -E "error CS[0-9]+" /workspace/Logs/import.log; then
-  echo "Unity import reported compile errors." >&2
-  exit 1
+  if grep -E "error CS[0-9]+" /workspace/Logs/import.log; then
+    echo "Unity import reported compile errors." >&2
+    exit 1
+  fi
+else
+  echo "Skipping Unity batchmode import: no license credentials configured."
+  echo "Add UNITY_LICENSE or UNITY_EMAIL/UNITY_PASSWORD to enable compile validation."
 fi

@@ -13,17 +13,26 @@ mkdir -p /workspace/Logs /workspace/Builds
 echo "Using Unity at: $UNITY_BIN"
 "$UNITY_BIN" -version
 
-"$UNITY_BIN" \
-  -batchmode \
-  -nographics \
-  -quit \
-  -projectPath /workspace \
-  -logFile /workspace/Logs/validate.log
+has_license=false
+if [[ -n "${UNITY_LICENSE:-}" || ( -n "${UNITY_EMAIL:-}" && -n "${UNITY_PASSWORD:-}" ) ]]; then
+  has_license=true
+fi
 
-if grep -E "error CS[0-9]+" /workspace/Logs/validate.log; then
-  echo "Compile errors found:" >&2
-  grep -E "error CS[0-9]+" /workspace/Logs/validate.log >&2
-  exit 1
+if [[ "$has_license" == true ]]; then
+  "$UNITY_BIN" \
+    -batchmode \
+    -nographics \
+    -quit \
+    -projectPath /workspace \
+    -logFile /workspace/Logs/validate.log
+
+  if grep -E "error CS[0-9]+" /workspace/Logs/validate.log; then
+    echo "Compile errors found:" >&2
+    grep -E "error CS[0-9]+" /workspace/Logs/validate.log >&2
+    exit 1
+  fi
+else
+  echo "Skipping Unity compile validation: no license credentials configured."
 fi
 
 echo "Validation succeeded."
