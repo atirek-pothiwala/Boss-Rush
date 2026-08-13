@@ -5,6 +5,13 @@ cd /workspace
 
 git lfs pull
 
+if ! head -c 8 Assets/Art/Logo.png | grep -q $'^version '; then
+  :
+else
+  echo "Git LFS assets were not pulled." >&2
+  exit 1
+fi
+
 mkdir -p /workspace/Logs /workspace/Builds
 
 UNITY_BIN="${UNITY_PATH:-/opt/unity/Editor/Unity}"
