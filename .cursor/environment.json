@@ -1,0 +1,10 @@
+{
+  "name": "Boss Rush",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  "user": "root",
+  "install": "./.cursor/scripts/cloud-agent-install.sh",
+  "start": "./.cursor/scripts/cloud-agent-start.sh"
+}
