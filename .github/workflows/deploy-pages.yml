@@ -44,10 +44,15 @@ jobs:
             Library-WebGL-
             Library-
 
+      - name: Activate Unity Personal license
+        uses: game-ci/unity-activate@v2
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
       - name: Build WebGL
         uses: game-ci/unity-builder@v4
         env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
@@ -56,12 +61,21 @@ jobs:
           buildsPath: build
           buildName: WebGL
 
+      - name: Return Unity license
+        if: always()
+        uses: game-ci/unity-return-license@v2
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
       - name: Prepare GitHub Pages artifact
+        if: success()
         run: |
           touch build/WebGL/.nojekyll
           cp README.md build/WebGL/README.md || true
 
       - name: Upload Pages artifact
+        if: success()
         uses: actions/upload-pages-artifact@v3
         with:
           path: build/WebGL
