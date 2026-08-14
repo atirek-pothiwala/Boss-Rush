@@ -3,8 +3,8 @@ set -euo pipefail
 
 GITHUB_OUTPUT="${GITHUB_OUTPUT:?}"
 
-if [[ -n "${UNITY_SERIAL:-}" || -n "${UNITY_LICENSE:-}" ]]; then
-  echo "Using serial or .ulf license activation."
+if [[ -n "${UNITY_SERIAL:-}" ]]; then
+  echo "Using serial license activation."
   echo "skip_activation=false" >> "${GITHUB_OUTPUT}"
   echo "use_entitlement=false" >> "${GITHUB_OUTPUT}"
   exit 0

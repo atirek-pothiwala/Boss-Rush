@@ -23,9 +23,10 @@ if [[ ! -x "$UNITY_BIN" ]]; then
 fi
 
 has_license=false
-if [[ -n "${UNITY_LICENSE:-}" ]]; then
-  mkdir -p "$HOME/.local/share/unity3d/Unity"
-  printf '%s' "$UNITY_LICENSE" > "$HOME/.local/share/unity3d/Unity/Unity_lic.ulf"
+if [[ -n "${UNITY_ENTITLEMENT_LICENSE:-}" ]]; then
+  LICENSE_DIR="${HOME}/.config/unity3d/Unity/licenses"
+  mkdir -p "${LICENSE_DIR}"
+  printf '%s' "${UNITY_ENTITLEMENT_LICENSE}" > "${LICENSE_DIR}/UnityEntitlementLicense.xml"
   has_license=true
 elif [[ -n "${UNITY_EMAIL:-}" && -n "${UNITY_PASSWORD:-}" ]]; then
   serial_args=()
@@ -78,5 +79,5 @@ if [[ "$has_license" == true ]]; then
   fi
 else
   echo "Skipping Unity batchmode import: no usable Unity license configured."
-  echo "Add UNITY_LICENSE or valid UNITY_EMAIL/UNITY_PASSWORD to enable compile validation."
+  echo "Add UNITY_ENTITLEMENT_LICENSE or valid UNITY_EMAIL/UNITY_PASSWORD/UNITY_SERIAL to enable compile validation."
 fi
