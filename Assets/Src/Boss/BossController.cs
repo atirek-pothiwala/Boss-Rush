@@ -174,6 +174,7 @@ public class BossController : MonoBehaviour
         currentAttack = null;
         isAttackInterrupted = false;
         isBusy = false;
+        yield break;
     }
 
     public IEnumerator PostAttackRoutine()
