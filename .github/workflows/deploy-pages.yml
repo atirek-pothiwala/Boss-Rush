@@ -30,7 +30,16 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_ENTITLEMENT_LICENSE: ${{ secrets.UNITY_ENTITLEMENT_LICENSE }}
         run: bash .github/scripts/validate-unity-secrets.sh
+
+      - name: Prepare Unity license
+        id: unity-license
+        env:
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_ENTITLEMENT_LICENSE: ${{ secrets.UNITY_ENTITLEMENT_LICENSE }}
+        run: bash .github/scripts/prepare-unity-license.sh
 
       - name: Free disk space
         uses: jlumbroso/free-disk-space@v1.3.1
@@ -65,9 +74,10 @@ jobs:
           targetPlatform: WebGL
           buildsPath: build
           buildName: WebGL
+          skipActivation: ${{ steps.unity-license.outputs.skip_activation == 'true' }}
 
       - name: Return Unity license
-        if: always() && steps.unity-build.outcome == 'success'
+        if: always() && steps.unity-build.outcome == 'success' && steps.unity-license.outputs.use_entitlement != 'true'
         uses: game-ci/unity-return-license@v2
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}

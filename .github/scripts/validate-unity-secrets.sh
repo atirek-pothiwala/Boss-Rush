@@ -7,9 +7,15 @@ if [[ -z "${UNITY_EMAIL:-}" || -z "${UNITY_PASSWORD:-}" ]]; then
   exit 1
 fi
 
-if [[ -z "${UNITY_SERIAL:-}" && -z "${UNITY_LICENSE:-}" ]]; then
-  echo "::error::Missing UNITY_SERIAL (or UNITY_LICENSE)."
-  echo "Unity Personal has no serial in your account settings."
-  echo "See README.md → WebGL / GitHub Pages → One-time setup for Mac Hub steps."
-  exit 1
+if [[ -n "${UNITY_SERIAL:-}" || -n "${UNITY_LICENSE:-}" ]]; then
+  exit 0
 fi
+
+if [[ -n "${UNITY_ENTITLEMENT_LICENSE:-}" ]]; then
+  exit 0
+fi
+
+echo "::error::Missing a Unity license secret."
+echo "Add one of: UNITY_ENTITLEMENT_LICENSE (Hub XML), UNITY_SERIAL (from Unity_lic.ulf), or UNITY_LICENSE (.ulf contents)."
+echo "See README.md → WebGL / GitHub Pages → One-time setup."
+exit 1
