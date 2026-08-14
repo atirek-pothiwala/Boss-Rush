@@ -42,12 +42,13 @@ jobs:
           projectPath: .
           testMode: EditMode
           customParameters: -nographics -batchmode
+          runAsHostUser: true
 
       - name: Reset workspace after tests
         if: github.ref == 'refs/heads/main'
         run: |
           git checkout -- Packages/manifest.json Packages/packages-lock.json
-          sudo chown -R "$USER:$USER" artifacts 2>/dev/null || true
+          sudo chown -R "$USER:$USER" Library artifacts build 2>/dev/null || true
           rm -rf artifacts
 
       - name: Build StandaloneLinux64
