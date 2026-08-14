@@ -67,33 +67,23 @@ The game deploys automatically to GitHub Pages when changes are pushed to `main`
 
 #### One-time setup (repository owner)
 
-GameCI requires three secrets for a Unity **Personal** license: the license file from Unity Hub plus your account credentials.
+Modern Unity **Personal** licenses are activated through Unity Hub sign-in. They store a file named `UnityEntitlementLicense.xml` (not `Unity_lic.ulf`). If you see Personal listed in Hub, your Mac license is already set up correctly.
 
-1. On your Mac, open **Unity Hub** and activate a free Personal license:
-   - **Preferences → Licenses → Add → Get a free personal license**
-   - Complete the activation flow (click **Add** even if a license already appears — this creates the `.ulf` file).
-2. Copy the license file contents (the folder is only created **after** a successful activation):
-   - **Primary Mac path (most common):** `/Library/Application Support/Unity/Unity_lic.ulf`
-     - This is the **system** Library at the disk root, **not** inside your home folder.
-   - **Alternate path:** `~/Library/Application Support/Unity/Unity_lic.ulf`
-   - **How to open hidden folders in Finder:** press **⌘⇧G** (Go → Go to Folder), paste the path above, and press Enter.
-   - **Search from Terminal** (if you are unsure where the file is):
-     ```bash
-     find /Library ~/Library -name "Unity_lic.ulf" 2>/dev/null
-     ```
-   - If nothing is found, the license file was never written. In Unity Hub go to **Preferences → Licenses → Add → Get a free personal license** again. If activation still fails, check **~/Library/Application Support/UnityHub/logs/info-log.json** for permission errors on `/Library/Application Support/Unity/`.
-   - Open `Unity_lic.ulf` in a text editor and copy the **entire** XML contents.
-3. Add GitHub Actions secrets (**Settings → Secrets and variables → Actions**). Names must match exactly:
-   - `UNITY_LICENSE` — paste the full contents of `Unity_lic.ulf`
+CI activates online during each workflow run, so you only need two GitHub secrets:
+
+1. In Unity Hub, confirm **Preferences → Licenses** shows an active **Personal** license (you already have this).
+2. Add GitHub Actions secrets (**Settings → Secrets and variables → Actions**). Names must match exactly:
    - `UNITY_EMAIL` — your Unity account email
    - `UNITY_PASSWORD` — your Unity account password  
    If you sign in with Google/GitHub, set a Unity password at https://id.unity.com first.
-4. Enable Pages: **Settings → Pages → Build and deployment → Source → GitHub Actions**
-5. Run **Actions → Deploy WebGL to GitHub Pages → Run workflow** (branch `main`)
+3. Enable Pages: **Settings → Pages → Build and deployment → Source → GitHub Actions**
+4. Run **Actions → Deploy WebGL to GitHub Pages → Run workflow** (branch `main`)
 
-The workflow activates your Personal license, builds WebGL with the `GithubPages` template, returns the license, and publishes via `actions/deploy-pages`.
+The workflow activates your Personal license online, builds WebGL with the `GithubPages` template, returns the license, and publishes via `actions/deploy-pages`.
 
 **Note:** Personal licenses have a concurrent activation limit. The workflow returns the license after each run so the next build can succeed.
+
+**Optional check on your Mac:** press **⌘⇧G** in Finder and open `~/Library/Unity/licenses/`. You should see `UnityEntitlementLicense.xml` — that confirms Hub activation worked. You do **not** need to copy this file into GitHub.
 
 #### Local WebGL build
 
@@ -111,7 +101,7 @@ This repo includes a Cursor Cloud Agent environment:
 - Install: `.cursor/scripts/cloud-agent-install.sh`
 - Config: `.cursor/environment.json`
 
-Set `UNITY_LICENSE`, `UNITY_EMAIL`, and `UNITY_PASSWORD` as environment secrets to enable optional batch-mode compile validation.
+Set `UNITY_EMAIL` and `UNITY_PASSWORD` as environment secrets to enable optional batch-mode compile validation.
 
 ## Tests
 
