@@ -43,6 +43,12 @@ jobs:
           testMode: EditMode
           customParameters: -nographics -batchmode
 
+      - name: Reset workspace after tests
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git checkout -- Packages/manifest.json Packages/packages-lock.json
+          rm -rf artifacts
+
       - name: Build StandaloneLinux64
         id: unity-build
         if: github.ref == 'refs/heads/main'
@@ -56,3 +62,4 @@ jobs:
           targetPlatform: StandaloneLinux64
           buildName: BossRush
           buildsPath: build
+          versioning: None
