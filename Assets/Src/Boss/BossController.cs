@@ -99,8 +99,12 @@ public class BossController : MonoBehaviour
         runSpeed *= 1.2f;
         retreatDuration *= 0.85f;
 
-        animator.SetInteger(StateHash, (int)BossState.Scream);
-        animator.SetTrigger(OnActionHash);
+        if (attacks.Any(attack => attack.state == BossState.Scream))
+        {
+            animator.SetInteger(StateHash, (int)BossState.Idle);
+            animator.SetInteger(StateHash, (int)BossState.Scream);
+            animator.SetTrigger(OnActionHash);
+        }
     }
 
     private void DecideAttack()
