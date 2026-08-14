@@ -71,7 +71,7 @@ Unity **Personal** licenses no longer support manual `.alf` / `.ulf` activation.
 
 1. On your Mac, open **Unity Hub** and activate a free Personal license:
    - **Preferences → Licenses → Add → Get a free personal license**
-2. Add GitHub Actions secrets (**Settings → Secrets and variables → Actions**):
+2. Add GitHub Actions secrets (**Settings → Secrets and variables → Actions**). Names must match exactly:
    - `UNITY_EMAIL` — your Unity account email
    - `UNITY_PASSWORD` — your Unity account password  
    If you sign in with Google/GitHub, set a Unity password at https://id.unity.com first.
