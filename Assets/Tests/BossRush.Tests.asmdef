@@ -2,9 +2,9 @@
     "name": "BossRush.Tests",
     "rootNamespace": "",
     "references": [
+        "BossRush",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
-        "Assembly-CSharp"
+        "UnityEditor.TestRunner"
     ],
     "includePlatforms": [
         "Editor"
@@ -18,6 +18,9 @@
     "autoReferenced": false,
     "defineConstraints": [
         "UNITY_INCLUDE_TESTS"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
     ],
     "versionDefines": [],
     "noEngineReferences": false
