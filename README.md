@@ -78,7 +78,9 @@ CI activates online during each workflow run using GameCI (`unity-license-activa
 2. Add GitHub Actions secrets (**Settings → Secrets and variables → Actions**). Names must match exactly:
    - `UNITY_EMAIL` — your Unity account email (required)
    - `UNITY_PASSWORD` — your Unity account password (required)
-   - `UNITY_LICENSE` — optional; only needed if automated online activation fails  
+   - `UNITY_LICENSE` — optional; only needed if automated online activation fails
+
+If CI fails at license activation, download the `unity-activation-file` artifact from the failed workflow run, upload the `.alf` file at https://license.unity3d.com/manual, complete Personal activation (you may need browser devtools to reveal the Personal option), download the `.ulf` file, and add its full contents as the `UNITY_LICENSE` secret.  
    If you sign in with Google/GitHub, set a Unity password at https://id.unity.com first.
 3. Enable Pages: **Settings → Pages → Build and deployment → Source → GitHub Actions**
 4. Run **Actions → Deploy WebGL to GitHub Pages → Run workflow** (branch `main`)
