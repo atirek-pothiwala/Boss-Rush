@@ -22,7 +22,15 @@ public class LevelManager : MonoBehaviour
     {
         LoadEnvironment();
         LoadFighters();
+        EnsureTouchControls();
         Constants.Instance.PersistRun();
+    }
+
+    private static void EnsureTouchControls()
+    {
+        if (!TouchControlsHud.ShouldShow()) return;
+        var touchControls = new GameObject("TouchControlsHud");
+        touchControls.AddComponent<TouchControlsHud>();
     }
 
     private void LoadFighters()

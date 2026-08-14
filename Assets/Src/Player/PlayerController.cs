@@ -217,14 +217,20 @@ public class PlayerController : MonoBehaviour
     {
         HealthManager.UpdateHeroStamina(-currentAttack.stamina);
 
+        bool facingRight = transform.localScale.x > 0f;
+        Vector3 impactPosition = Vector3.Lerp(transform.position, boss.transform.position, 0.65f);
+        impactPosition.y += 0.35f;
+
         float distance = DistanceToBoss();
         if (distance <= currentAttack.range * RangeScale)
         {
+            CombatVfx.PlayPlayerAttack(impactPosition, currentAttack.state, facingRight);
             int effectiveDamage = Mathf.RoundToInt(currentAttack.damage * damageMultiplier);
             StartCoroutine(boss.GetComponent<BossController>().DamageRoutine(currentAttack, effectiveDamage));
         }
         else
         {
+            CombatVfx.PlayMissSwipe(transform.position + new Vector3(facingRight ? 0.4f : -0.4f, 0.3f, 0f), facingRight);
             SoundManager.PlayBlankAttack();
         }
 
@@ -247,6 +253,7 @@ public class PlayerController : MonoBehaviour
         } 
         else
         {
+            CombatVfx.PlayBloodHit(transform.position + Vector3.up * 0.4f, direction);
             HealthManager.UpdateHeroHealth(-(damageOverride ?? attack.damage));
             rigidBody.AddForceX(-direction.x * attack.knockbackForce, ForceMode2D.Impulse);
             animator.SetInteger(StateHash, (int) PlayerState.Hurt);
