@@ -25,6 +25,35 @@
         color: #f5f5f5;
         font-family: system-ui, -apple-system, sans-serif;
       }
+      #rotate-prompt {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        padding: 32px 24px;
+        text-align: center;
+        background: #0d0d12;
+      }
+      #rotate-prompt .rotate-icon {
+        font-size: clamp(40px, 12vw, 56px);
+        line-height: 1;
+        opacity: 0.9;
+      }
+      #rotate-prompt .rotate-title {
+        font-size: clamp(20px, 5vw, 28px);
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+      #rotate-prompt .rotate-body {
+        max-width: 28rem;
+        font-size: clamp(14px, 3.8vw, 18px);
+        line-height: 1.5;
+        opacity: 0.8;
+      }
       #unity-container {
         width: 100%;
         height: 100%;
@@ -40,21 +69,21 @@
       #unity-canvas {
         background: #0d0d12;
         display: block;
-        width: 100%;
-        height: 100%;
         outline: none;
+        max-width: 100%;
+        max-height: 100%;
       }
       #unity-loading-bar {
         position: absolute;
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
-        width: min(360px, 80vw);
+        width: min(420px, 72vw);
         text-align: center;
         z-index: 2;
       }
       #unity-logo {
-        font-size: clamp(22px, 6vw, 28px);
+        font-size: clamp(22px, 5vw, 28px);
         font-weight: 700;
         letter-spacing: 0.08em;
         margin-bottom: 16px;
@@ -78,7 +107,7 @@
         bottom: max(12px, env(safe-area-inset-bottom));
         width: 100%;
         text-align: center;
-        font-size: 12px;
+        font-size: clamp(11px, 2.5vw, 12px);
         opacity: 0.65;
         pointer-events: none;
       }
@@ -87,20 +116,25 @@
         top: max(12px, env(safe-area-inset-top));
         left: 50%;
         transform: translateX(-50%);
-        max-width: 90vw;
+        max-width: min(90vw, 42rem);
         text-align: center;
         z-index: 3;
         padding: 12px 16px;
         border-radius: 8px;
         background: rgba(255, 80, 80, 0.15);
         border: 1px solid rgba(255, 80, 80, 0.4);
-        font-size: 14px;
+        font-size: clamp(13px, 3.5vw, 14px);
         line-height: 1.4;
         display: none;
       }
     </style>
   </head>
   <body>
+    <div id="rotate-prompt" aria-live="polite">
+      <div class="rotate-icon" aria-hidden="true">↻</div>
+      <p class="rotate-title">Rotate your device</p>
+      <p class="rotate-body">Boss Rush is designed for landscape mode. Turn your phone sideways to play.</p>
+    </div>
     <div id="unity-container">
       <canvas id="unity-canvas" width="{{{ WIDTH }}}" height="{{{ HEIGHT }}}" tabindex="-1"></canvas>
       <div id="unity-loading-bar">
@@ -114,11 +148,20 @@
     </div>
     <script>
       var canvas = document.querySelector("#unity-canvas");
+      var container = document.querySelector("#unity-container");
+      var rotatePrompt = document.querySelector("#rotate-prompt");
       var loadingBar = document.querySelector("#unity-loading-bar");
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
       var warningBanner = document.querySelector("#unity-warning");
+      var gameWidth = {{{ WIDTH }}};
+      var gameHeight = {{{ HEIGHT }}};
+      var gameAspect = gameWidth / gameHeight;
 
       var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+      function isPortrait() {
+        return window.innerHeight > window.innerWidth;
+      }
 
       function showError(msg) {
         loadingBar.style.display = "none";
@@ -132,17 +175,37 @@
         }
       }
 
-      function resizeCanvas() {
-        if (!isMobile) {
-          canvas.style.width = "{{{ WIDTH }}}px";
-          canvas.style.height = "{{{ HEIGHT }}}px";
+      function updateLayout() {
+        var portrait = isPortrait();
+        rotatePrompt.style.display = portrait ? "flex" : "none";
+        container.style.display = portrait ? "none" : "flex";
+
+        if (portrait) {
+          return;
         }
+
+        var viewWidth = window.innerWidth;
+        var viewHeight = window.innerHeight;
+        var viewAspect = viewWidth / viewHeight;
+        var cssWidth;
+        var cssHeight;
+
+        if (viewAspect > gameAspect) {
+          cssHeight = viewHeight;
+          cssWidth = viewHeight * gameAspect;
+        } else {
+          cssWidth = viewWidth;
+          cssHeight = viewWidth / gameAspect;
+        }
+
+        canvas.style.width = cssWidth + "px";
+        canvas.style.height = cssHeight + "px";
       }
 
-      resizeCanvas();
-      window.addEventListener("resize", resizeCanvas);
+      updateLayout();
+      window.addEventListener("resize", updateLayout);
       window.addEventListener("orientationchange", function () {
-        setTimeout(resizeCanvas, 100);
+        setTimeout(updateLayout, 100);
       });
 
       // Resolve paths relative to the deployed folder (works on GitHub Pages project sites).
@@ -188,6 +251,7 @@
             progressBarFull.style.width = 100 * progress + "%";
           }).then(function () {
             loadingBar.style.display = "none";
+            updateLayout();
           }).catch(function (message) {
             var hint = isMobile
               ? " Mobile browsers need a recent version of Safari (iOS 15+) or Chrome (Android). Try desktop if loading keeps failing."
