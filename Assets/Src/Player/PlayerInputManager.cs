@@ -50,7 +50,7 @@ public class PlayerInputManager : MonoBehaviour
             playerControls.PlayerActions.Shield.performed += ctx => OnShieldEvent?.Invoke(true);
             playerControls.PlayerActions.Shield.canceled += ctx => OnShieldEvent?.Invoke(false);
 
-            playerControls.OtherActions.Pause.performed += ctx => OnPauseEvent?.Invoke(true);
+            playerControls.OtherActions.Pause.started += _ => OnPauseEvent?.Invoke(true);
         }
         playerControls.Enable();
     }

@@ -443,7 +443,7 @@
                     "id": "6a79cbcf-10e0-4380-b8ac-f4969dc17559",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "Press(behavior=2)",
+                    "interactions": "",
                     "initialStateCheck": false
                 }
             ],
