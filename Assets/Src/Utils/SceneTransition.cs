@@ -11,16 +11,6 @@ public static class SceneTransition
         IsLoading = false;
     }
 
-    internal static void BeginLoadingForTests()
-    {
-        IsLoading = true;
-    }
-
-    internal static void ResetLoadingFlagForTests()
-    {
-        IsLoading = false;
-    }
-
     public static void Load(string sceneName)
     {
         if (IsLoading || string.IsNullOrEmpty(sceneName))
