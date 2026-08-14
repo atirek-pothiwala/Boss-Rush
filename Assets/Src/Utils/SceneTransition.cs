@@ -11,7 +11,6 @@ public static class SceneTransition
         IsLoading = false;
     }
 
-#if UNITY_INCLUDE_TESTS
     internal static void BeginLoadingForTests()
     {
         IsLoading = true;
@@ -21,7 +20,6 @@ public static class SceneTransition
     {
         IsLoading = false;
     }
-#endif
 
     public static void Load(string sceneName)
     {
