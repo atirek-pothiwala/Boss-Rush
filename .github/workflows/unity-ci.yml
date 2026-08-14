@@ -53,7 +53,6 @@ jobs:
           projectPath: .
           testMode: EditMode
           customParameters: -nographics -batchmode
-          skipActivation: ${{ steps.unity-license.outputs.skip_activation == 'true' }}
 
       - name: Build StandaloneLinux64
         id: unity-build
