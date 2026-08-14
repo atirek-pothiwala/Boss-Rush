@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,11 +16,13 @@ public class DashboardManager : MonoBehaviour
     private TMP_FontAsset menuFont;
     private Slider musicSlider;
     private Slider sfxSlider;
+    private readonly List<GameObject> mainMenuItems = new();
 
     void Start()
     {
         LoadEnvironment();
         CacheMenuFont();
+        CacheMainMenuItems();
         BuildHeroSelectionPanel();
         BuildSettingsPanel();
         BuildControlsPanel();
@@ -30,21 +33,24 @@ public class DashboardManager : MonoBehaviour
     public void ShowHeroSelection()
     {
         SoundManager.Instance.PlayNormalClick();
-        HideMenuPanels();
+        HideSubPanels();
+        HideMainMenu();
         heroSelectionPanel.SetActive(true);
     }
 
     public void ShowSettings()
     {
         SoundManager.Instance.PlaySoftClick();
-        HideMenuPanels();
+        HideSubPanels();
+        HideMainMenu();
         settingsPanel.SetActive(true);
     }
 
     public void ShowControls()
     {
         SoundManager.Instance.PlaySoftClick();
-        HideMenuPanels();
+        HideSubPanels();
+        HideMainMenu();
         controlsPanel.SetActive(true);
     }
 
@@ -69,11 +75,8 @@ public class DashboardManager : MonoBehaviour
     public void BackToMainMenu()
     {
         SoundManager.Instance.PlaySoftClick();
-        HideMenuPanels();
-        if (startButton != null)
-        {
-            startButton.SetActive(true);
-        }
+        HideSubPanels();
+        ShowMainMenu();
     }
 
     public void Navigate(string name)
@@ -96,25 +99,53 @@ public class DashboardManager : MonoBehaviour
     private void BuildMainMenuButtons()
     {
         var parent = startButton != null ? startButton.transform.parent : transform;
-        CreateTextButton(parent, "Settings", new Vector2(0, -110), new Vector2(180, 36), ShowSettings);
-        CreateTextButton(parent, "Controls", new Vector2(0, -155), new Vector2(180, 36), ShowControls);
-        CreateTextButton(parent, "Exit", new Vector2(0, -200), new Vector2(180, 36), () => Navigate("Exit"));
+        mainMenuItems.Add(CreateTextButton(parent, "Settings", new Vector2(0, -110), new Vector2(180, 36), ShowSettings));
+        mainMenuItems.Add(CreateTextButton(parent, "Controls", new Vector2(0, -155), new Vector2(180, 36), ShowControls));
+        mainMenuItems.Add(CreateTextButton(parent, "Exit", new Vector2(0, -200), new Vector2(180, 36), () => Navigate("Exit")));
     }
 
     private void TryResumeSavedRun()
     {
         if (!GameSave.TryLoadRun(out _, out var level) || level <= 0) return;
-        CreateTextButton(
-            startButton != null ? startButton.transform.parent : transform,
+        var parent = startButton != null ? startButton.transform.parent : transform;
+        mainMenuItems.Add(CreateTextButton(
+            parent,
             "Continue",
             new Vector2(0, -70),
             new Vector2(180, 36),
-            ContinueSavedRun);
+            ContinueSavedRun));
     }
 
-    private void HideMenuPanels()
+    private void CacheMainMenuItems()
     {
-        if (startButton != null) startButton.SetActive(false);
+        mainMenuItems.Clear();
+        if (startButton != null) mainMenuItems.Add(startButton);
+
+        var logo = transform.Find("Logo");
+        if (logo != null) mainMenuItems.Add(logo.gameObject);
+
+        var title = transform.Find("Title");
+        if (title != null) mainMenuItems.Add(title.gameObject);
+    }
+
+    private void HideMainMenu()
+    {
+        foreach (var item in mainMenuItems)
+        {
+            if (item != null) item.SetActive(false);
+        }
+    }
+
+    private void ShowMainMenu()
+    {
+        foreach (var item in mainMenuItems)
+        {
+            if (item != null) item.SetActive(true);
+        }
+    }
+
+    private void HideSubPanels()
+    {
         if (heroSelectionPanel != null) heroSelectionPanel.SetActive(false);
         if (settingsPanel != null) settingsPanel.SetActive(false);
         if (controlsPanel != null) controlsPanel.SetActive(false);
@@ -144,7 +175,6 @@ public class DashboardManager : MonoBehaviour
         var canvas = GetComponent<RectTransform>();
         heroSelectionPanel = CreateUiObject("HeroSelectionPanel", canvas);
         Stretch(heroSelectionPanel.GetComponent<RectTransform>());
-        CreatePanelOverlay(heroSelectionPanel.transform, 0.88f);
 
         var title = CreateLabel(heroSelectionPanel.transform, "Choose Your Hero", 42, new Vector2(0, 150));
         title.fontStyle = FontStyles.Bold;
@@ -196,7 +226,6 @@ public class DashboardManager : MonoBehaviour
 
         CreateLabel(controlsPanel.transform, "Controls", 42, new Vector2(0, 170)).fontStyle = FontStyles.Bold;
         CreateLabel(controlsPanel.transform,
-            "Desktop / Gamepad:\n" +
             "Move: WASD / Arrow Keys / Left Stick\n" +
             "Run: Shift / RB\n" +
             "Jump: Space / A\n" +
@@ -204,10 +233,8 @@ public class DashboardManager : MonoBehaviour
             "Power Attack: RMB / X\n" +
             "Special Attack: E / B\n" +
             "Shield: Q / LB\n" +
-            "Pause: Escape / Start\n\n" +
-            "Mobile / Touch:\n" +
-            "On-screen buttons appear automatically in battle.",
-            20, new Vector2(0, 0));
+            "Pause: Escape / Start",
+            22, new Vector2(0, 10));
 
         CreateTextButton(controlsPanel.transform, "Back", new Vector2(0, -170), new Vector2(220, 42), BackToMainMenu);
         controlsPanel.SetActive(false);
@@ -282,7 +309,7 @@ public class DashboardManager : MonoBehaviour
         rect.anchoredPosition = position;
 
         var background = cardObject.AddComponent<Image>();
-        background.color = new Color(0.04f, 0.06f, 0.1f, 0.94f);
+        background.color = new Color(0f, 0f, 0f, 0.35f);
         background.raycastTarget = true;
 
         var button = cardObject.AddComponent<Button>();
@@ -319,7 +346,7 @@ public class DashboardManager : MonoBehaviour
         text.raycastTarget = false;
     }
 
-    private void CreateTextButton(
+    private GameObject CreateTextButton(
         Transform parent,
         string label,
         Vector2 position,
@@ -351,6 +378,8 @@ public class DashboardManager : MonoBehaviour
         text.fontSize = 30;
         text.alignment = TextAlignmentOptions.Center;
         text.color = Color.white;
+
+        return buttonObject;
     }
 
     private TextMeshProUGUI CreateLabel(Transform parent, string textValue, float fontSize, Vector2 position)
@@ -386,16 +415,5 @@ public class DashboardManager : MonoBehaviour
         rect.anchorMax = Vector2.one;
         rect.offsetMin = Vector2.zero;
         rect.offsetMax = Vector2.zero;
-    }
-
-    private static void CreatePanelOverlay(Transform parent, float alpha)
-    {
-        var overlay = CreateUiObject("Overlay", parent);
-        overlay.transform.SetAsFirstSibling();
-        Stretch(overlay.GetComponent<RectTransform>());
-
-        var image = overlay.AddComponent<Image>();
-        image.color = new Color(0.02f, 0.04f, 0.08f, alpha);
-        image.raycastTarget = false;
     }
 }
