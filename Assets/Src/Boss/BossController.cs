@@ -151,14 +151,25 @@ public class BossController : MonoBehaviour
             StopMovement();
         }
 
+        animator.SetInteger(StateHash, (int)BossState.Idle);
         animator.SetInteger(StateHash, (int)currentAttack.state);
         animator.SetTrigger(OnActionHash);
 
         yield return new WaitForSeconds(attackFailsafeDuration);
         if (!attackResolved)
         {
-            yield return PostAttackRoutine();
+            yield return AttackFailsafeRecovery();
         }
+    }
+
+    private IEnumerator AttackFailsafeRecovery()
+    {
+        attackResolved = true;
+        StopMovement();
+        UpdateMovementAnimation(BossState.Idle);
+        currentAttack = null;
+        isAttackInterrupted = false;
+        isBusy = false;
     }
 
     public IEnumerator PostAttackRoutine()
