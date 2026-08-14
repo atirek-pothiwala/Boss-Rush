@@ -69,11 +69,7 @@ The game deploys automatically to GitHub Pages when changes are pushed to `main`
 
 Unity **Personal** uses Named User Licensing in Hub. There is **no serial in your Unity account**, and [license.unity3d.com](https://license.unity3d.com/manual) is for **Pro** licenses only.
 
-### Option A — Hub entitlement file (recommended)
-
-If you have `~/Library/Unity/licenses/UnityEntitlementLicense.xml` but no `Unity_lic.ulf`:
-
-1. Open the file (**⌘⇧G** → `~/Library/Unity/licenses/UnityEntitlementLicense.xml`) and copy the **entire** XML.
+1. Open `~/Library/Unity/licenses/UnityEntitlementLicense.xml` (**⌘⇧G** in Finder) and copy the **entire** XML.
 2. Add GitHub Actions secrets (**Settings → Secrets and variables → Actions**):
    - `UNITY_ENTITLEMENT_LICENSE` — paste the full XML
    - `UNITY_EMAIL` — your Unity account email
@@ -83,26 +79,6 @@ If you have `~/Library/Unity/licenses/UnityEntitlementLicense.xml` but no `Unity
 4. Run **Actions → Deploy WebGL to GitHub Pages → Run workflow** (branch `main`)
 
 The workflow installs your entitlement file into the GameCI docker environment and builds with `skipActivation`.
-
-### Option B — Serial from `Unity_lic.ulf` (fallback)
-
-If Option A does not work, force Hub to create `Unity_lic.ulf` on your Mac:
-
-```bash
-sudo mkdir -p "/Library/Application Support/Unity"
-sudo chmod 777 "/Library/Application Support/Unity"
-```
-
-Unity Hub → **Settings → Licenses → Add → Get a free personal license**, then:
-
-```bash
-find /Library ~/Library -name "Unity_lic.ulf" 2>/dev/null
-./scripts/extract-unity-serial.sh "/Library/Application Support/Unity/Unity_lic.ulf"
-```
-
-Add **`UNITY_SERIAL`** with the extracted value instead of `UNITY_ENTITLEMENT_LICENSE`.
-
-**Note:** Personal licenses have a concurrent activation limit when using serial activation. Entitlement-based builds skip license return.
 
 #### Local WebGL build
 
@@ -120,7 +96,7 @@ This repo includes a Cursor Cloud Agent environment:
 - Install: `.cursor/scripts/cloud-agent-install.sh`
 - Config: `.cursor/environment.json`
 
-Set `UNITY_EMAIL`, `UNITY_PASSWORD`, and `UNITY_ENTITLEMENT_LICENSE` (or `UNITY_SERIAL`) as environment secrets to enable optional batch-mode compile validation.
+Set `UNITY_EMAIL`, `UNITY_PASSWORD`, and `UNITY_ENTITLEMENT_LICENSE` as environment secrets to enable optional batch-mode compile validation.
 
 ## Tests
 
