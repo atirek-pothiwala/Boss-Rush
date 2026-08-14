@@ -65,6 +65,8 @@ The game deploys automatically to GitHub Pages when changes are pushed to `main`
 
 **Live URL:** https://atirek-pothiwala.github.io/Boss-Rush/
 
+**Mobile:** Works in Safari 15+ (iOS) and Chrome 58+ (Android). Use the link above — the game loads at the site root. First load may take a minute on mobile networks.
+
 #### One-time setup (repository owner)
 
 1. Add GitHub Actions secrets (**Settings → Secrets and variables → Actions**):
