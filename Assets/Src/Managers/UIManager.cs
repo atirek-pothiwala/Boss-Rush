@@ -28,14 +28,30 @@ public class UIManager : MonoBehaviour
     {
         Instance = this;
 
+        EnsurePauseMenuVisible();
         PauseMenu.SetActive(false);
         AttributeMenu.SetActive(true);
         textLevelName.text = Constants.Instance.BossName();
     }
 
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
     void Update()
     {
-        if(!HealthManager.Instance.IsGameOver && !PauseManager.Instance.IsGamePaused)
+        // Do not gate on SceneTransition.IsLoading here — that flag must not block
+        // pause/game-over UI during normal gameplay after a scene has loaded.
+
+        var healthManager = HealthManager.Instance;
+        var pauseManager = PauseManager.Instance;
+        if (healthManager == null || pauseManager == null) return;
+
+        if(!healthManager.IsGameOver && !pauseManager.IsGamePaused)
         {
             if(!PauseMenu.activeSelf) return;
             PauseMenu.SetActive(false);
@@ -43,20 +59,22 @@ public class UIManager : MonoBehaviour
         }
 
         if(PauseMenu.activeSelf) return;
+
+        EnsurePauseMenuVisible();
         PauseMenu.SetActive(true);
-        if(PauseManager.Instance.IsGamePaused)
+        if(pauseManager.IsGamePaused)
         {
             ResumeButton.SetActive(true);
             TextStatus.text = "Paused";
             NextBossButton.SetActive(false);
         }
-        else if (HealthManager.Instance.IsHeroDead)
+        else if (healthManager.IsHeroDead)
         {
             ResumeButton.SetActive(false);
             TextStatus.text = $"{Constants.Instance.SelectedHeroName()} was defeated by {Constants.Instance.BossName()}";
             NextBossButton.SetActive(false);
         } 
-        else if (HealthManager.Instance.IsBossDead)
+        else if (healthManager.IsBossDead)
         {
             ResumeButton.SetActive(false);
             if (Constants.Instance.IsNextLevel)
@@ -68,6 +86,17 @@ public class UIManager : MonoBehaviour
                 TextStatus.text = $"Victory!\n{Constants.Instance.SelectedHeroName()} conquered the Boss Rush!";
             }
             NextBossButton.SetActive(Constants.Instance.IsNextLevel);
+        }
+    }
+
+    private void EnsurePauseMenuVisible()
+    {
+        if (PauseMenu == null) return;
+
+        var rect = PauseMenu.GetComponent<RectTransform>();
+        if (rect != null && rect.localScale == Vector3.zero)
+        {
+            rect.localScale = Vector3.one;
         }
     }
 }

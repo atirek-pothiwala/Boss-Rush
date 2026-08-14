@@ -25,6 +25,11 @@ public class HealthManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+
         if (regenerationRoutine != null)
         {
             StopCoroutine(regenerationRoutine);
@@ -37,7 +42,10 @@ public class HealthManager : MonoBehaviour
         while (true)
         {
             yield return wait;
-            if (PauseManager.Instance.IsGamePaused) continue;
+            if (SceneTransition.IsLoading) yield break;
+
+            var pauseManager = PauseManager.Instance;
+            if (pauseManager == null || pauseManager.IsGamePaused) continue;
             if (IsGameOver) continue;
 
             BossStamina += regenerationRate * 2;
@@ -63,29 +71,47 @@ public class HealthManager : MonoBehaviour
 
     public float BossHealth
     {
-        get => UIManager.Instance.BossHealth.value * bossMaxHealth;
-        private set => UIManager.Instance.BossHealth.value = Mathf.Clamp01(value / bossMaxHealth);
+        get => GetUiManager()?.BossHealth.value * bossMaxHealth ?? bossMaxHealth;
+        private set
+        {
+            var ui = GetUiManager();
+            if (ui != null) ui.BossHealth.value = Mathf.Clamp01(value / bossMaxHealth);
+        }
     }
 
     public float BossStamina
     {
-        get => UIManager.Instance.BossStamina.value * 100;
-        private set => UIManager.Instance.BossStamina.value = Mathf.Clamp01(value / 100);
+        get => GetUiManager()?.BossStamina.value * 100 ?? 100f;
+        private set
+        {
+            var ui = GetUiManager();
+            if (ui != null) ui.BossStamina.value = Mathf.Clamp01(value / 100);
+        }
     }
 
     public float HeroHealth
     {
-        get => UIManager.Instance.HeroHealth.value * heroMaxHealth;
-        private set => UIManager.Instance.HeroHealth.value = Mathf.Clamp01(value / heroMaxHealth);
+        get => GetUiManager()?.HeroHealth.value * heroMaxHealth ?? heroMaxHealth;
+        private set
+        {
+            var ui = GetUiManager();
+            if (ui != null) ui.HeroHealth.value = Mathf.Clamp01(value / heroMaxHealth);
+        }
     }
 
     public float HeroStamina
     {
-        get => UIManager.Instance.HeroStamina.value * 100;
-        private set => UIManager.Instance.HeroStamina.value = Mathf.Clamp01(value / 100);
+        get => GetUiManager()?.HeroStamina.value * 100 ?? 100f;
+        private set
+        {
+            var ui = GetUiManager();
+            if (ui != null) ui.HeroStamina.value = Mathf.Clamp01(value / 100);
+        }
     }
 
-    public float BossHealthPercent => UIManager.Instance.BossHealth.value;
+    public float BossHealthPercent => GetUiManager()?.BossHealth.value ?? 1f;
+
+    private static UIManager GetUiManager() => UIManager.Instance;
 
     public void UpdateBossHealth(int value)
     {

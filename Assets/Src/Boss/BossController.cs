@@ -52,16 +52,23 @@ public class BossController : MonoBehaviour
 
     void Update()
     {
-        if (PauseManager.IsGamePaused) return;
+        if (SceneTransition.IsLoading) return;
+
+        var pauseManager = PauseManager.Instance;
+        if (pauseManager != null && pauseManager.IsGamePaused) return;
         if (hero == null)
         {
             hero = GameObject.FindGameObjectWithTag("Hero");
             return;
         }
         ApplyGravity();
+
+        var healthManager = HealthManager.Instance;
+        if (healthManager == null) return;
+
         CheckEnrage();
 
-        if (HealthManager.IsGameOver) return;
+        if (healthManager.IsGameOver) return;
         if (isBusy) return;
         if (currentAttack == null)
         {
