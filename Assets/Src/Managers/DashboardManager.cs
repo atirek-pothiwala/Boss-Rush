@@ -144,6 +144,7 @@ public class DashboardManager : MonoBehaviour
         var canvas = GetComponent<RectTransform>();
         heroSelectionPanel = CreateUiObject("HeroSelectionPanel", canvas);
         Stretch(heroSelectionPanel.GetComponent<RectTransform>());
+        CreatePanelOverlay(heroSelectionPanel.transform, 0.88f);
 
         var title = CreateLabel(heroSelectionPanel.transform, "Choose Your Hero", 42, new Vector2(0, 150));
         title.fontStyle = FontStyles.Bold;
@@ -195,6 +196,7 @@ public class DashboardManager : MonoBehaviour
 
         CreateLabel(controlsPanel.transform, "Controls", 42, new Vector2(0, 170)).fontStyle = FontStyles.Bold;
         CreateLabel(controlsPanel.transform,
+            "Desktop / Gamepad:\n" +
             "Move: WASD / Arrow Keys / Left Stick\n" +
             "Run: Shift / RB\n" +
             "Jump: Space / A\n" +
@@ -202,8 +204,10 @@ public class DashboardManager : MonoBehaviour
             "Power Attack: RMB / X\n" +
             "Special Attack: E / B\n" +
             "Shield: Q / LB\n" +
-            "Pause: Escape / Start",
-            22, new Vector2(0, 10));
+            "Pause: Escape / Start\n\n" +
+            "Mobile / Touch:\n" +
+            "On-screen buttons appear automatically in battle.",
+            20, new Vector2(0, 0));
 
         CreateTextButton(controlsPanel.transform, "Back", new Vector2(0, -170), new Vector2(220, 42), BackToMainMenu);
         controlsPanel.SetActive(false);
@@ -278,7 +282,7 @@ public class DashboardManager : MonoBehaviour
         rect.anchoredPosition = position;
 
         var background = cardObject.AddComponent<Image>();
-        background.color = new Color(0f, 0f, 0f, 0.35f);
+        background.color = new Color(0.04f, 0.06f, 0.1f, 0.94f);
         background.raycastTarget = true;
 
         var button = cardObject.AddComponent<Button>();
@@ -382,5 +386,16 @@ public class DashboardManager : MonoBehaviour
         rect.anchorMax = Vector2.one;
         rect.offsetMin = Vector2.zero;
         rect.offsetMax = Vector2.zero;
+    }
+
+    private static void CreatePanelOverlay(Transform parent, float alpha)
+    {
+        var overlay = CreateUiObject("Overlay", parent);
+        overlay.transform.SetAsFirstSibling();
+        Stretch(overlay.GetComponent<RectTransform>());
+
+        var image = overlay.AddComponent<Image>();
+        image.color = new Color(0.02f, 0.04f, 0.08f, alpha);
+        image.raycastTarget = false;
     }
 }
