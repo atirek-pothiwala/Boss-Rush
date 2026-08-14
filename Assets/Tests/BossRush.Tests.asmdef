@@ -2,9 +2,7 @@
     "name": "BossRush.Tests",
     "rootNamespace": "",
     "references": [
-        "BossRush",
-        "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "BossRush"
     ],
     "includePlatforms": [
         "Editor"
