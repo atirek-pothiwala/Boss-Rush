@@ -68,14 +68,42 @@ jobs:
       - name: Prepare GitHub Pages artifact
         if: steps.unity-build.outcome == 'success'
         run: |
-          touch build/WebGL/.nojekyll
-          cp README.md build/WebGL/README.md || true
+          # game-ci outputs to build/WebGL/WebGL when buildName matches the platform folder
+          BUILD_OUTPUT="build/WebGL/WebGL"
+          SITE_ROOT="build/pages-site"
+          if [ ! -f "$BUILD_OUTPUT/index.html" ]; then
+            echo "Expected WebGL build output at $BUILD_OUTPUT"
+            find build -name index.html
+            exit 1
+          fi
+          mkdir -p "$SITE_ROOT"
+          cp -r "$BUILD_OUTPUT"/* "$SITE_ROOT/"
+          touch "$SITE_ROOT/.nojekyll"
+          cp README.md "$SITE_ROOT/README.md" || true
+          # Redirect old /WebGL/ bookmarks to the site root
+          mkdir -p "$SITE_ROOT/WebGL"
+          cat > "$SITE_ROOT/WebGL/index.html" << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1">
+              <title>Boss Rush</title>
+              <script>
+                location.replace(location.pathname.replace(/\/WebGL\/?$/, "/") + location.search + location.hash);
+              </script>
+            </head>
+            <body>
+              <p><a href="../">Open Boss Rush</a></p>
+            </body>
+          </html>
+          EOF
 
       - name: Upload Pages artifact
         if: steps.unity-build.outcome == 'success'
         uses: actions/upload-pages-artifact@v3
         with:
-          path: build/WebGL
+          path: build/pages-site
 
   deploy:
     name: Deploy to GitHub Pages
