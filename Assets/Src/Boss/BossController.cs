@@ -146,11 +146,6 @@ public class BossController : MonoBehaviour
         if (isAttackInterrupted) yield break;
         HealthManager.UpdateBossStamina(-currentAttack.stamina);
 
-        bool facingRight = transform.localScale.x > 0f;
-        Vector3 impactPosition = Vector3.Lerp(transform.position, hero.transform.position, 0.65f);
-        impactPosition.y += 0.35f;
-        CombatVfx.PlayBossAttack(impactPosition, currentAttack.state, facingRight);
-
         int effectiveDamage = Mathf.RoundToInt(currentAttack.damage * damageMultiplier);
         StartCoroutine(hero.GetComponent<PlayerController>().DamageRoutine(currentAttack, effectiveDamage));
         yield return new WaitForSeconds(currentAttack.cooldown);
@@ -195,7 +190,6 @@ public class BossController : MonoBehaviour
         HealthManager.UpdateBossHealth(-(damageOverride ?? attack.damage));
         
         Vector2 direction = LookingDirection();
-        CombatVfx.PlayBloodHit(transform.position + Vector3.up * 0.4f, direction);
         rigidBody.AddForceX(-direction.x * attack.knockbackForce, ForceMode2D.Impulse);
         animator.SetInteger(StateHash, (int) BossState.Hurt);
         animator.SetTrigger(OnActionHash);
