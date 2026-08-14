@@ -24,6 +24,14 @@ public class CameraManager : MonoBehaviour
         Instance = this;
     }
 
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
     public void Initialize(Transform hero, Transform boss)
     {
         this.hero = hero;
