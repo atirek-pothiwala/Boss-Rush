@@ -19,12 +19,14 @@ jobs:
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
           UNITY_ENTITLEMENT_LICENSE: ${{ secrets.UNITY_ENTITLEMENT_LICENSE }}
         run: bash .github/scripts/validate-unity-secrets.sh
 
       - name: Prepare Unity license
         id: unity-license
         env:
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
           UNITY_ENTITLEMENT_LICENSE: ${{ secrets.UNITY_ENTITLEMENT_LICENSE }}
         run: bash .github/scripts/prepare-unity-license.sh
 
@@ -36,11 +38,26 @@ jobs:
           restore-keys: |
             Library-
 
+      - name: Run EditMode tests
+        id: unity-tests
+        if: steps.unity-license.outputs.use_entitlement != 'true'
+        uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          unityVersion: 6000.4.3f1
+          projectPath: .
+          testMode: EditMode
+          customParameters: -nographics -batchmode
+
       - name: Build StandaloneLinux64
         id: unity-build
         if: github.ref == 'refs/heads/main'
         uses: game-ci/unity-builder@v4
         env:
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
@@ -49,3 +66,16 @@ jobs:
           buildName: BossRush
           buildsPath: build
           skipActivation: ${{ steps.unity-license.outputs.skip_activation == 'true' }}
+
+      - name: Return Unity license
+        if: >-
+          always() &&
+          steps.unity-license.outputs.use_entitlement != 'true' &&
+          (
+            (github.ref == 'refs/heads/main' && steps.unity-build.outcome == 'success') ||
+            (github.ref != 'refs/heads/main' && steps.unity-tests.outcome == 'success')
+          )
+        uses: game-ci/unity-return-license@v2
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
