@@ -39,7 +39,7 @@ jobs:
           dotnet: true
           haskell: true
           large-packages: true
-          docker-images: true
+          docker-images: false
           swap-storage: true
 
       - name: Cache Unity Library
@@ -63,21 +63,14 @@ jobs:
           buildsPath: build
           buildName: WebGL
 
-      - name: Return Unity license
-        if: always() && steps.unity-build.outcome == 'success'
-        uses: game-ci/unity-return-license@v2
-        env:
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-
       - name: Prepare GitHub Pages artifact
-        if: success()
+        if: steps.unity-build.outcome == 'success'
         run: |
           touch build/WebGL/.nojekyll
           cp README.md build/WebGL/README.md || true
 
       - name: Upload Pages artifact
-        if: success()
+        if: steps.unity-build.outcome == 'success'
         uses: actions/upload-pages-artifact@v3
         with:
           path: build/WebGL
