@@ -176,10 +176,10 @@ public class DashboardManager : MonoBehaviour
         heroSelectionPanel = CreateUiObject("HeroSelectionPanel", canvas);
         Stretch(heroSelectionPanel.GetComponent<RectTransform>());
 
-        var title = CreateLabel(heroSelectionPanel.transform, "Choose Your Hero", 42, new Vector2(0, 150));
+        var title = CreateLabel(heroSelectionPanel.transform, "Choose Your Hero", 28, new Vector2(0, 100));
         title.fontStyle = FontStyles.Bold;
 
-        var cardPositions = new[] { new Vector2(-170, 10), new Vector2(0, 10), new Vector2(170, 10) };
+        var cardPositions = new[] { new Vector2(-220, -10), new Vector2(0, -10), new Vector2(220, -10) };
         for (var i = 0; i < Constants.HeroNames.Length; i++)
         {
             var heroIndex = i;
@@ -192,7 +192,7 @@ public class DashboardManager : MonoBehaviour
                 () => SelectHero(heroIndex));
         }
 
-        CreateTextButton(heroSelectionPanel.transform, "Back", new Vector2(0, -170), new Vector2(220, 42), BackToMainMenu);
+        CreateTextButton(heroSelectionPanel.transform, "Back", new Vector2(0, -140), new Vector2(200, 36), BackToMainMenu);
         heroSelectionPanel.SetActive(false);
     }
 
@@ -202,19 +202,19 @@ public class DashboardManager : MonoBehaviour
         settingsPanel = CreateUiObject("SettingsPanel", canvas);
         Stretch(settingsPanel.GetComponent<RectTransform>());
 
-        CreateLabel(settingsPanel.transform, "Settings", 42, new Vector2(0, 150)).fontStyle = FontStyles.Bold;
-        musicSlider = CreateSlider(settingsPanel.transform, "Music Volume", new Vector2(0, 40), GameSave.MusicVolume, value =>
+        CreateLabel(settingsPanel.transform, "Settings", 28, new Vector2(0, 100)).fontStyle = FontStyles.Bold;
+        musicSlider = CreateSlider(settingsPanel.transform, "Music Volume", new Vector2(0, 10), GameSave.MusicVolume, value =>
         {
             GameSave.MusicVolume = value;
             SoundManager.Instance.SetMusicVolume(value);
         });
-        sfxSlider = CreateSlider(settingsPanel.transform, "SFX Volume", new Vector2(0, -30), GameSave.SfxVolume, value =>
+        sfxSlider = CreateSlider(settingsPanel.transform, "SFX Volume", new Vector2(0, -50), GameSave.SfxVolume, value =>
         {
             GameSave.SfxVolume = value;
             SoundManager.Instance.SetSfxVolume(value);
         });
 
-        CreateTextButton(settingsPanel.transform, "Back", new Vector2(0, -150), new Vector2(220, 42), BackToMainMenu);
+        CreateTextButton(settingsPanel.transform, "Back", new Vector2(0, -130), new Vector2(200, 36), BackToMainMenu);
         settingsPanel.SetActive(false);
     }
 
@@ -224,8 +224,9 @@ public class DashboardManager : MonoBehaviour
         controlsPanel = CreateUiObject("ControlsPanel", canvas);
         Stretch(controlsPanel.GetComponent<RectTransform>());
 
-        CreateLabel(controlsPanel.transform, "Controls", 42, new Vector2(0, 170)).fontStyle = FontStyles.Bold;
-        CreateLabel(controlsPanel.transform,
+        CreateLabel(controlsPanel.transform, "Controls", 28, new Vector2(0, 110)).fontStyle = FontStyles.Bold;
+        var controlsText = CreateLabel(
+            controlsPanel.transform,
             "Move: WASD / Arrow Keys / Left Stick\n" +
             "Run: Shift / RB\n" +
             "Jump: Space / A\n" +
@@ -234,9 +235,14 @@ public class DashboardManager : MonoBehaviour
             "Special Attack: E / B\n" +
             "Shield: Q / LB\n" +
             "Pause: Escape / Start",
-            22, new Vector2(0, 10));
+            15,
+            new Vector2(0, -10),
+            new Vector2(720, 200),
+            true);
+        controlsText.alignment = TextAlignmentOptions.Top;
+        controlsText.lineSpacing = 4f;
 
-        CreateTextButton(controlsPanel.transform, "Back", new Vector2(0, -170), new Vector2(220, 42), BackToMainMenu);
+        CreateTextButton(controlsPanel.transform, "Back", new Vector2(0, -140), new Vector2(200, 36), BackToMainMenu);
         controlsPanel.SetActive(false);
     }
 
@@ -247,10 +253,10 @@ public class DashboardManager : MonoBehaviour
         rect.anchorMin = new Vector2(0.5f, 0.5f);
         rect.anchorMax = new Vector2(0.5f, 0.5f);
         rect.pivot = new Vector2(0.5f, 0.5f);
-        rect.sizeDelta = new Vector2(360, 50);
+        rect.sizeDelta = new Vector2(420, 50);
         rect.anchoredPosition = position;
 
-        var text = CreateLabel(row.transform, label, 22, new Vector2(-90, 0));
+        var text = CreateLabel(row.transform, label, 16, new Vector2(-90, 0));
         text.alignment = TextAlignmentOptions.Left;
         text.rectTransform.sizeDelta = new Vector2(180, 40);
 
@@ -340,7 +346,7 @@ public class DashboardManager : MonoBehaviour
         var text = labelObject.AddComponent<TextMeshProUGUI>();
         text.text = label;
         text.font = menuFont;
-        text.fontSize = 24;
+        text.fontSize = 18;
         text.alignment = TextAlignmentOptions.Center;
         text.color = Color.white;
         text.raycastTarget = false;
@@ -375,27 +381,41 @@ public class DashboardManager : MonoBehaviour
         var text = textObject.AddComponent<TextMeshProUGUI>();
         text.text = label;
         text.font = menuFont;
-        text.fontSize = 30;
+        text.fontSize = 20;
         text.alignment = TextAlignmentOptions.Center;
         text.color = Color.white;
 
         return buttonObject;
     }
 
-    private TextMeshProUGUI CreateLabel(Transform parent, string textValue, float fontSize, Vector2 position)
+    private TextMeshProUGUI CreateLabel(
+        Transform parent,
+        string textValue,
+        float fontSize,
+        Vector2 position,
+        Vector2? size = null,
+        bool autoSize = false)
     {
         var labelObject = CreateUiObject("Label", parent);
         var rect = labelObject.GetComponent<RectTransform>();
         rect.anchorMin = new Vector2(0.5f, 0.5f);
         rect.anchorMax = new Vector2(0.5f, 0.5f);
         rect.pivot = new Vector2(0.5f, 0.5f);
-        rect.sizeDelta = new Vector2(500, 60);
+        rect.sizeDelta = size ?? new Vector2(480, 48);
         rect.anchoredPosition = position;
 
         var text = labelObject.AddComponent<TextMeshProUGUI>();
         text.text = textValue;
         text.font = menuFont;
         text.fontSize = fontSize;
+        text.enableWordWrapping = true;
+        text.overflowMode = TextOverflowModes.Overflow;
+        if (autoSize)
+        {
+            text.enableAutoSizing = true;
+            text.fontSizeMin = Mathf.Max(12f, fontSize * 0.75f);
+            text.fontSizeMax = fontSize;
+        }
         text.alignment = TextAlignmentOptions.Center;
         text.color = Color.white;
         return text;
