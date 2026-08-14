@@ -69,7 +69,7 @@ The game deploys automatically to GitHub Pages when changes are pushed to `main`
 
 Modern Unity **Personal** licenses are activated through Unity Hub sign-in. They store a file named `UnityEntitlementLicense.xml` (not `Unity_lic.ulf`). If you see Personal listed in Hub, your Mac license is already set up correctly.
 
-CI activates online during each workflow run, so you only need two GitHub secrets:
+CI activates online during each workflow run using GameCI (`unity-license-activate` + `unity-activate`), so you only need two GitHub secrets:
 
 1. In Unity Hub, confirm **Preferences → Licenses** shows an active **Personal** license (you already have this).
 2. Add GitHub Actions secrets (**Settings → Secrets and variables → Actions**). Names must match exactly:

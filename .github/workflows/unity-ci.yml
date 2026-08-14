@@ -27,24 +27,20 @@ jobs:
           fi
 
       - name: Activate Unity Personal license
-        uses: RageAgainstThePixel/activate-unity-license@v2
-        with:
-          license: personal
-          username: ${{ secrets.UNITY_EMAIL }}
-          password: ${{ secrets.UNITY_PASSWORD }}
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_VERSION: 6000.4.3f1
+        run: bash .github/scripts/activate-unity-personal-ci.sh
 
-      - name: Export license for GameCI
-        run: |
-          LICENSE_FILE=$(find /tmp "${RUNNER_TEMP}" "${HOME}/.local/share/unity3d/Unity" -name 'Unity_lic.ulf' 2>/dev/null | head -1)
-          if [ -z "$LICENSE_FILE" ] || [ ! -f "$LICENSE_FILE" ]; then
-            echo "::error::Could not find Unity_lic.ulf after online activation."
-            exit 1
-          fi
-          {
-            echo 'UNITY_LICENSE<<UNITY_LICENSE_EOF'
-            cat "$LICENSE_FILE"
-            echo 'UNITY_LICENSE_EOF'
-          } >> "$GITHUB_ENV"
+      - name: Verify Unity license
+        uses: game-ci/unity-activate@v2
+        env:
+          UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          unityVersion: 6000.4.3f1
 
       - name: Cache Unity Library
         uses: actions/cache@v4
@@ -58,6 +54,7 @@ jobs:
         id: unity-tests
         uses: game-ci/unity-test-runner@v4
         env:
+          UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
@@ -71,6 +68,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: game-ci/unity-builder@v4
         env:
+          UNITY_LICENSE: ${{ env.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
