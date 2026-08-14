@@ -68,14 +68,21 @@ jobs:
       - name: Prepare GitHub Pages artifact
         if: steps.unity-build.outcome == 'success'
         run: |
-          touch build/WebGL/.nojekyll
-          cp README.md build/WebGL/README.md || true
+          # game-ci outputs to build/WebGL/WebGL when buildName matches the platform folder
+          PAGES_ROOT="build/WebGL/WebGL"
+          if [ ! -f "$PAGES_ROOT/index.html" ]; then
+            echo "Expected WebGL build output at $PAGES_ROOT"
+            find build -name index.html
+            exit 1
+          fi
+          touch "$PAGES_ROOT/.nojekyll"
+          cp README.md "$PAGES_ROOT/README.md" || true
 
       - name: Upload Pages artifact
         if: steps.unity-build.outcome == 'success'
         uses: actions/upload-pages-artifact@v3
         with:
-          path: build/WebGL
+          path: build/WebGL/WebGL
 
   deploy:
     name: Deploy to GitHub Pages
