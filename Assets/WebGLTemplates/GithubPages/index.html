@@ -3,13 +3,24 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>{{{ PRODUCT_NAME }}}</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body {
         width: 100%;
         height: 100%;
+        height: 100dvh;
+        min-height: -webkit-fill-available;
+        overflow: hidden;
+        overscroll-behavior: none;
+        touch-action: none;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
         background: #0d0d12;
         color: #f5f5f5;
         font-family: system-ui, -apple-system, sans-serif;
@@ -17,14 +28,21 @@
       #unity-container {
         width: 100%;
         height: 100%;
+        height: 100dvh;
+        min-height: -webkit-fill-available;
         display: flex;
         align-items: center;
         justify-content: center;
-        position: relative;
+        position: fixed;
+        inset: 0;
+        padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
       }
       #unity-canvas {
         background: #0d0d12;
         display: block;
+        width: 100%;
+        height: 100%;
+        outline: none;
       }
       #unity-loading-bar {
         position: absolute;
@@ -33,9 +51,10 @@
         transform: translate(-50%, -50%);
         width: min(360px, 80vw);
         text-align: center;
+        z-index: 2;
       }
       #unity-logo {
-        font-size: 28px;
+        font-size: clamp(22px, 6vw, 28px);
         font-weight: 700;
         letter-spacing: 0.08em;
         margin-bottom: 16px;
@@ -56,19 +75,28 @@
       }
       #unity-footer {
         position: absolute;
-        bottom: 12px;
+        bottom: max(12px, env(safe-area-inset-bottom));
         width: 100%;
         text-align: center;
         font-size: 12px;
         opacity: 0.65;
+        pointer-events: none;
       }
       #unity-warning {
         position: absolute;
-        top: 12px;
+        top: max(12px, env(safe-area-inset-top));
         left: 50%;
         transform: translateX(-50%);
         max-width: 90vw;
         text-align: center;
+        z-index: 3;
+        padding: 12px 16px;
+        border-radius: 8px;
+        background: rgba(255, 80, 80, 0.15);
+        border: 1px solid rgba(255, 80, 80, 0.4);
+        font-size: 14px;
+        line-height: 1.4;
+        display: none;
       }
     </style>
   </head>
@@ -90,10 +118,32 @@
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
       var warningBanner = document.querySelector("#unity-warning");
 
-      function unityShowBanner(msg, type) {
-        warningBanner.style.display = type === "error" ? "block" : "none";
+      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+      function showError(msg) {
+        loadingBar.style.display = "none";
+        warningBanner.style.display = "block";
         warningBanner.innerHTML = msg;
       }
+
+      function unityShowBanner(msg, type) {
+        if (type === "error") {
+          showError(msg);
+        }
+      }
+
+      function resizeCanvas() {
+        if (!isMobile) {
+          canvas.style.width = "{{{ WIDTH }}}px";
+          canvas.style.height = "{{{ HEIGHT }}}px";
+        }
+      }
+
+      resizeCanvas();
+      window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("orientationchange", function () {
+        setTimeout(resizeCanvas, 100);
+      });
 
       // Resolve paths relative to the deployed folder (works on GitHub Pages project sites).
       var pagePath = window.location.pathname;
@@ -123,32 +173,30 @@
         showBanner: unityShowBanner,
       };
 
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        var meta = document.createElement("meta");
-        meta.name = "viewport";
-        meta.content = "width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes";
-        document.getElementsByTagName("head")[0].appendChild(meta);
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
-      } else {
-        canvas.style.width = "{{{ WIDTH }}}px";
-        canvas.style.height = "{{{ HEIGHT }}}px";
-      }
-
       loadingBar.style.display = "block";
 
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = function () {
-        createUnityInstance(canvas, config, function (progress) {
-          progressBarFull.style.width = 100 * progress + "%";
-        }).then(function () {
-          loadingBar.style.display = "none";
-        }).catch(function (message) {
-          alert(message);
-        });
-      };
-      document.body.appendChild(script);
+      if (typeof WebAssembly !== "object") {
+        showError("This browser does not support WebAssembly. Try updating your browser or use a desktop device.");
+      } else {
+        var script = document.createElement("script");
+        script.src = loaderUrl;
+        script.onerror = function () {
+          showError("Failed to load the game. Check your connection and try again.");
+        };
+        script.onload = function () {
+          createUnityInstance(canvas, config, function (progress) {
+            progressBarFull.style.width = 100 * progress + "%";
+          }).then(function () {
+            loadingBar.style.display = "none";
+          }).catch(function (message) {
+            var hint = isMobile
+              ? " Mobile browsers need a recent version of Safari (iOS 15+) or Chrome (Android). Try desktop if loading keeps failing."
+              : "";
+            showError(String(message) + hint);
+          });
+        };
+        document.body.appendChild(script);
+      }
     </script>
   </body>
 </html>
