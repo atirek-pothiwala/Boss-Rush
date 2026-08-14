@@ -47,6 +47,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           git checkout -- Packages/manifest.json Packages/packages-lock.json
+          sudo chown -R "$USER:$USER" artifacts 2>/dev/null || true
           rm -rf artifacts
 
       - name: Build StandaloneLinux64
@@ -63,3 +64,4 @@ jobs:
           buildName: BossRush
           buildsPath: build
           versioning: None
+          runAsHostUser: true
