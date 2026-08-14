@@ -22,31 +22,49 @@ if [[ ! -x "$UNITY_BIN" ]]; then
   exit 1
 fi
 
-if [[ -z "${UNITY_ENTITLEMENT_LICENSE:-}" ]]; then
-  echo "Skipping Unity batchmode import: UNITY_ENTITLEMENT_LICENSE is not set." >&2
-  exit 0
+has_license=false
+if [[ -n "${UNITY_EMAIL:-}" && -n "${UNITY_PASSWORD:-}" && -n "${UNITY_SERIAL:-}" ]]; then
+  set +e
+  "$UNITY_BIN" \
+    -batchmode \
+    -nographics \
+    -quit \
+    -serial "$UNITY_SERIAL" \
+    -username "$UNITY_EMAIL" \
+    -password "$UNITY_PASSWORD" \
+    -logFile /workspace/Logs/license-activation.log
+  activation_status=$?
+  set -e
+
+  if [[ "$activation_status" -eq 0 ]] \
+    && ! grep -q "No valid Unity Editor license found" /workspace/Logs/license-activation.log; then
+    has_license=true
+  else
+    echo "Unity license activation unavailable; continuing without batchmode import." >&2
+    echo "See /workspace/Logs/license-activation.log for details." >&2
+  fi
 fi
 
-LICENSE_DIR="${HOME}/.config/unity3d/Unity/licenses"
-mkdir -p "${LICENSE_DIR}"
-printf '%s' "${UNITY_ENTITLEMENT_LICENSE}" > "${LICENSE_DIR}/UnityEntitlementLicense.xml"
+if [[ "$has_license" == true ]]; then
+  set +e
+  "$UNITY_BIN" \
+    -batchmode \
+    -nographics \
+    -quit \
+    -projectPath /workspace \
+    -logFile /workspace/Logs/import.log
+  import_status=$?
+  set -e
 
-set +e
-"$UNITY_BIN" \
-  -batchmode \
-  -nographics \
-  -quit \
-  -projectPath /workspace \
-  -logFile /workspace/Logs/import.log
-import_status=$?
-set -e
+  if [[ "$import_status" -ne 0 ]]; then
+    echo "Unity import failed with exit code $import_status." >&2
+    exit 1
+  fi
 
-if [[ "$import_status" -ne 0 ]]; then
-  echo "Unity import failed with exit code $import_status." >&2
-  exit 1
-fi
-
-if grep -E "error CS[0-9]+" /workspace/Logs/import.log; then
-  echo "Unity import reported compile errors." >&2
-  exit 1
+  if grep -E "error CS[0-9]+" /workspace/Logs/import.log; then
+    echo "Unity import reported compile errors." >&2
+    exit 1
+  fi
+else
+  echo "Skipping Unity batchmode import: set UNITY_SERIAL, UNITY_EMAIL, and UNITY_PASSWORD."
 fi

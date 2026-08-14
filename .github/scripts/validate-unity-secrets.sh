@@ -7,11 +7,8 @@ if [[ -z "${UNITY_EMAIL:-}" || -z "${UNITY_PASSWORD:-}" ]]; then
   exit 1
 fi
 
-if [[ -n "${UNITY_ENTITLEMENT_LICENSE:-}" ]]; then
-  exit 0
+if [[ -z "${UNITY_SERIAL:-}" ]]; then
+  echo "::error::Missing UNITY_SERIAL repository secret."
+  echo "See README.md → WebGL / GitHub Pages → One-time setup."
+  exit 1
 fi
-
-echo "::error::Missing UNITY_ENTITLEMENT_LICENSE repository secret."
-echo "Copy the full XML from ~/Library/Unity/licenses/UnityEntitlementLicense.xml."
-echo "See README.md → WebGL / GitHub Pages → One-time setup."
-exit 1

@@ -13,15 +13,11 @@ mkdir -p /workspace/Logs /workspace/Builds
 echo "Using Unity at: $UNITY_BIN"
 "$UNITY_BIN" -version
 
-if [[ -z "${UNITY_ENTITLEMENT_LICENSE:-}" ]]; then
-  echo "Skipping Unity compile validation: UNITY_ENTITLEMENT_LICENSE is not set."
+if [[ -z "${UNITY_EMAIL:-}" || -z "${UNITY_PASSWORD:-}" || -z "${UNITY_SERIAL:-}" ]]; then
+  echo "Skipping Unity compile validation: set UNITY_SERIAL, UNITY_EMAIL, and UNITY_PASSWORD."
   echo "Validation succeeded."
   exit 0
 fi
-
-LICENSE_DIR="${HOME}/.config/unity3d/Unity/licenses"
-mkdir -p "${LICENSE_DIR}"
-printf '%s' "${UNITY_ENTITLEMENT_LICENSE}" > "${LICENSE_DIR}/UnityEntitlementLicense.xml"
 
 "$UNITY_BIN" \
   -batchmode \
