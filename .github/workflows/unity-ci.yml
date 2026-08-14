@@ -56,15 +56,3 @@ jobs:
           targetPlatform: StandaloneLinux64
           buildName: BossRush
           buildsPath: build
-
-      - name: Return Unity license
-        if: >-
-          always() &&
-          (
-            (github.ref == 'refs/heads/main' && steps.unity-build.outcome == 'success') ||
-            (github.ref != 'refs/heads/main' && steps.unity-tests.outcome == 'success')
-          )
-        uses: game-ci/unity-return-license@v2
-        env:
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}

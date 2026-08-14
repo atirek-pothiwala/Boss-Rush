@@ -46,7 +46,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: Library
-          key: Library-WebGL-6000.4.3f1-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}-v4
+          key: Library-WebGL-6000.4.3f1-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}-v5
           restore-keys: |
             Library-WebGL-6000.4.3f1-
 
