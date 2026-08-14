@@ -99,8 +99,12 @@ public class BossController : MonoBehaviour
         runSpeed *= 1.2f;
         retreatDuration *= 0.85f;
 
-        animator.SetInteger(StateHash, (int)BossState.Scream);
-        animator.SetTrigger(OnActionHash);
+        if (attacks.Any(attack => attack.state == BossState.Scream))
+        {
+            animator.SetInteger(StateHash, (int)BossState.Idle);
+            animator.SetInteger(StateHash, (int)BossState.Scream);
+            animator.SetTrigger(OnActionHash);
+        }
     }
 
     private void DecideAttack()
@@ -151,14 +155,26 @@ public class BossController : MonoBehaviour
             StopMovement();
         }
 
+        animator.SetInteger(StateHash, (int)BossState.Idle);
         animator.SetInteger(StateHash, (int)currentAttack.state);
         animator.SetTrigger(OnActionHash);
 
         yield return new WaitForSeconds(attackFailsafeDuration);
         if (!attackResolved)
         {
-            yield return PostAttackRoutine();
+            yield return AttackFailsafeRecovery();
         }
+    }
+
+    private IEnumerator AttackFailsafeRecovery()
+    {
+        attackResolved = true;
+        StopMovement();
+        UpdateMovementAnimation(BossState.Idle);
+        currentAttack = null;
+        isAttackInterrupted = false;
+        isBusy = false;
+        yield break;
     }
 
     public IEnumerator PostAttackRoutine()
