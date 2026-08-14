@@ -13,6 +13,8 @@ public class PauseManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        PlayerInputManager.OnPauseEvent -= OnPause;
+
         if (Instance == this)
         {
             Instance = null;
