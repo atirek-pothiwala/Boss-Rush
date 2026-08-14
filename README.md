@@ -72,10 +72,17 @@ GameCI requires three secrets for a Unity **Personal** license: the license file
 1. On your Mac, open **Unity Hub** and activate a free Personal license:
    - **Preferences → Licenses → Add → Get a free personal license**
    - Complete the activation flow (click **Add** even if a license already appears — this creates the `.ulf` file).
-2. Copy the license file contents:
-   - Mac: `/Library/Application Support/Unity/Unity_lic.ulf`
-   - If that path is empty, also check `~/Library/Application Support/Unity/Unity_lic.ulf`
-   - Open the file in a text editor and copy the **entire** XML contents.
+2. Copy the license file contents (the folder is only created **after** a successful activation):
+   - **Primary Mac path (most common):** `/Library/Application Support/Unity/Unity_lic.ulf`
+     - This is the **system** Library at the disk root, **not** inside your home folder.
+   - **Alternate path:** `~/Library/Application Support/Unity/Unity_lic.ulf`
+   - **How to open hidden folders in Finder:** press **⌘⇧G** (Go → Go to Folder), paste the path above, and press Enter.
+   - **Search from Terminal** (if you are unsure where the file is):
+     ```bash
+     find /Library ~/Library -name "Unity_lic.ulf" 2>/dev/null
+     ```
+   - If nothing is found, the license file was never written. In Unity Hub go to **Preferences → Licenses → Add → Get a free personal license** again. If activation still fails, check **~/Library/Application Support/UnityHub/logs/info-log.json** for permission errors on `/Library/Application Support/Unity/`.
+   - Open `Unity_lic.ulf` in a text editor and copy the **entire** XML contents.
 3. Add GitHub Actions secrets (**Settings → Secrets and variables → Actions**). Names must match exactly:
    - `UNITY_LICENSE` — paste the full contents of `Unity_lic.ulf`
    - `UNITY_EMAIL` — your Unity account email
