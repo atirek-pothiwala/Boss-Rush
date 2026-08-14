@@ -67,18 +67,21 @@ The game deploys automatically to GitHub Pages when changes are pushed to `main`
 
 #### One-time setup (repository owner)
 
-Unity **Personal** uses Named User Licensing in Hub. There is **no serial in your Unity account**, and [license.unity3d.com](https://license.unity3d.com/manual) is for **Pro** licenses only.
+Unity **Personal** uses Named User Licensing in Hub. For CI, use a serial extracted from your local license file.
 
-1. Open `~/Library/Unity/licenses/UnityEntitlementLicense.xml` (**⌘⇧G** in Finder) and copy the **entire** XML.
-2. Add GitHub Actions secrets (**Settings → Secrets and variables → Actions**):
-   - `UNITY_ENTITLEMENT_LICENSE` — paste the full XML
+1. Add GitHub Actions secrets (**Settings → Secrets and variables → Actions**):
+   - `UNITY_SERIAL` — serial from your `Unity_lic.ulf` (see below)
    - `UNITY_EMAIL` — your Unity account email
    - `UNITY_PASSWORD` — your Unity account password  
      If you sign in with Google/GitHub, set a Unity password at https://id.unity.com first.
-3. Enable Pages: **Settings → Pages → Build and deployment → Source → GitHub Actions**
-4. Run **Actions → Deploy WebGL to GitHub Pages → Run workflow** (branch `main`)
+2. Enable Pages: **Settings → Pages → Build and deployment → Source → GitHub Actions**
+3. Run **Actions → Deploy WebGL to GitHub Pages → Run workflow** (branch `main`)
 
-The workflow installs your entitlement file into the GameCI docker environment and builds with `skipActivation`.
+**Finding your serial on Mac:** if Hub created `Unity_lic.ulf`, the serial is in the `<DeveloperData Value="...">` field (base64-decoded, skip the first 4 bytes). On Mac the file is usually at `/Library/Application Support/Unity/Unity_lic.ulf`.
+
+**Fallback:** if you have no `.ulf` file, paste the full `~/Library/Unity/licenses/UnityEntitlementLicense.xml` as `UNITY_ENTITLEMENT_LICENSE` instead of `UNITY_SERIAL`. This skips EditMode tests in CI.
+
+Personal licenses have a concurrent activation limit. Serial-based workflows return the license after each successful run.
 
 #### Local WebGL build
 
@@ -96,7 +99,7 @@ This repo includes a Cursor Cloud Agent environment:
 - Install: `.cursor/scripts/cloud-agent-install.sh`
 - Config: `.cursor/environment.json`
 
-Set `UNITY_EMAIL`, `UNITY_PASSWORD`, and `UNITY_ENTITLEMENT_LICENSE` as environment secrets to enable optional batch-mode compile validation.
+Set `UNITY_SERIAL`, `UNITY_EMAIL`, and `UNITY_PASSWORD` as environment secrets (or `UNITY_ENTITLEMENT_LICENSE` as a fallback) to enable optional batch-mode compile validation.
 
 ## Tests
 
