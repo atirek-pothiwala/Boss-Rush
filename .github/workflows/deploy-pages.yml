@@ -26,12 +26,18 @@ jobs:
 
       - name: Validate Unity secrets
         env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         run: |
-          if [ -z "$UNITY_EMAIL" ] || [ -z "$UNITY_PASSWORD" ]; then
-            echo "::error::Missing UNITY_EMAIL or UNITY_PASSWORD repository secrets."
-            echo "Add them at Settings → Secrets and variables → Actions."
+          missing=()
+          [ -z "$UNITY_LICENSE" ] && missing+=("UNITY_LICENSE")
+          [ -z "$UNITY_EMAIL" ] && missing+=("UNITY_EMAIL")
+          [ -z "$UNITY_PASSWORD" ] && missing+=("UNITY_PASSWORD")
+          if [ "${#missing[@]}" -gt 0 ]; then
+            echo "::error::Missing GitHub Actions secrets: ${missing[*]}"
+            echo "Personal licenses need UNITY_LICENSE (.ulf contents from Unity Hub), UNITY_EMAIL, and UNITY_PASSWORD."
+            echo "See README.md → WebGL / GitHub Pages → One-time setup."
             exit 1
           fi
 
@@ -59,6 +65,7 @@ jobs:
         id: unity-build
         uses: game-ci/unity-builder@v4
         env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
@@ -68,7 +75,7 @@ jobs:
           buildName: WebGL
 
       - name: Return Unity license
-        if: always() && steps.unity-build.outcome != 'skipped'
+        if: always() && steps.unity-build.outcome == 'success'
         uses: game-ci/unity-return-license@v2
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}

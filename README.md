@@ -67,18 +67,24 @@ The game deploys automatically to GitHub Pages when changes are pushed to `main`
 
 #### One-time setup (repository owner)
 
-Unity **Personal** licenses no longer support manual `.alf` / `.ulf` activation. CI uses your Unity account login instead.
+GameCI requires three secrets for a Unity **Personal** license: the license file from Unity Hub plus your account credentials.
 
 1. On your Mac, open **Unity Hub** and activate a free Personal license:
    - **Preferences → Licenses → Add → Get a free personal license**
-2. Add GitHub Actions secrets (**Settings → Secrets and variables → Actions**). Names must match exactly:
+   - Complete the activation flow (click **Add** even if a license already appears — this creates the `.ulf` file).
+2. Copy the license file contents:
+   - Mac: `/Library/Application Support/Unity/Unity_lic.ulf`
+   - If that path is empty, also check `~/Library/Application Support/Unity/Unity_lic.ulf`
+   - Open the file in a text editor and copy the **entire** XML contents.
+3. Add GitHub Actions secrets (**Settings → Secrets and variables → Actions**). Names must match exactly:
+   - `UNITY_LICENSE` — paste the full contents of `Unity_lic.ulf`
    - `UNITY_EMAIL` — your Unity account email
    - `UNITY_PASSWORD` — your Unity account password  
    If you sign in with Google/GitHub, set a Unity password at https://id.unity.com first.
-3. Enable Pages: **Settings → Pages → Build and deployment → Source → GitHub Actions**
-4. Run **Actions → Deploy WebGL to GitHub Pages → Run workflow** (branch `main`)
+4. Enable Pages: **Settings → Pages → Build and deployment → Source → GitHub Actions**
+5. Run **Actions → Deploy WebGL to GitHub Pages → Run workflow** (branch `main`)
 
-The workflow activates your Personal license online, builds WebGL with the `GithubPages` template, returns the license, and publishes via `actions/deploy-pages`.
+The workflow activates your Personal license, builds WebGL with the `GithubPages` template, returns the license, and publishes via `actions/deploy-pages`.
 
 **Note:** Personal licenses have a concurrent activation limit. The workflow returns the license after each run so the next build can succeed.
 
@@ -98,7 +104,7 @@ This repo includes a Cursor Cloud Agent environment:
 - Install: `.cursor/scripts/cloud-agent-install.sh`
 - Config: `.cursor/environment.json`
 
-Set `UNITY_EMAIL` and `UNITY_PASSWORD` as environment secrets to enable optional batch-mode compile validation. Unity Personal does not use manual `.ulf` license files.
+Set `UNITY_LICENSE`, `UNITY_EMAIL`, and `UNITY_PASSWORD` as environment secrets to enable optional batch-mode compile validation.
 
 ## Tests
 
