@@ -85,15 +85,7 @@ public class DashboardManager : MonoBehaviour
         SoundManager.Instance.PlayHardClick();
         if (name.Equals("Exit"))
         {
-#if UNITY_WEBGL && !UNITY_EDITOR
-            return;
-#else
-            Application.Quit();
-            
-            #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-            #endif
-#endif
+            WebGLHelper.CloseTab();
         } 
         else
         {
