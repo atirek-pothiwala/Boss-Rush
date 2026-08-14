@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PauseManager : MonoBehaviour
 {
@@ -9,14 +10,6 @@ public class PauseManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-    }
-
-    private void OnDestroy()
-    {
-        if (Instance == this)
-        {
-            Instance = null;
-        }
     }
 
     private void OnEnable()
@@ -49,14 +42,13 @@ public class PauseManager : MonoBehaviour
 
     public void NextBoss()
     {
-        if (SceneTransition.IsLoading) return;
-
         SoundManager.Instance.PlayHardClick();
         
         IsGamePaused = false;
+        Time.timeScale = 1;        
 
         Constants.Instance.NextLevel();
-        SceneTransition.Load("Fight Level");
+        SceneManager.LoadScene("Fight Level");
     }
 
     public void ResumeGame()
@@ -69,24 +61,20 @@ public class PauseManager : MonoBehaviour
 
      public void RestartGame()
     {
-        if (SceneTransition.IsLoading) return;
-
         SoundManager.Instance.PlayHardClick();
 
-        IsGamePaused = false;
+        Time.timeScale = 1;
         Constants.Instance.ResetProgress();
-        SceneTransition.Load("Fight Level");
+        SceneManager.LoadScene("Fight Level");
     }
 
     public void MainMenu()
     {
-        if (SceneTransition.IsLoading) return;
-
         SoundManager.Instance.PlayHardClick();
         SoundManager.Instance.PlayMenuMusic();
 
-        IsGamePaused = false;
-        SceneTransition.Load("Main Menu");
+        Time.timeScale = 1;
+        SceneManager.LoadScene("Main Menu");
     }
 
 }

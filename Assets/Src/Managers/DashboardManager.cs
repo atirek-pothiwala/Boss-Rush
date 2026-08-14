@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class DashboardManager : MonoBehaviour
@@ -59,7 +60,7 @@ public class DashboardManager : MonoBehaviour
         Constants.Instance.SelectHero(heroIndex);
         Constants.Instance.ResetProgress();
         Constants.Instance.PersistRun();
-        SceneTransition.Load("Fight Level");
+        SceneManager.LoadScene("Fight Level");
     }
 
     public void ContinueSavedRun()
@@ -68,7 +69,7 @@ public class DashboardManager : MonoBehaviour
 
         SoundManager.Instance.PlayHardClick();
         Constants.Instance.LoadProgress(heroIndex, level);
-        SceneTransition.Load("Fight Level");
+        SceneManager.LoadScene("Fight Level");
     }
 
     public void BackToMainMenu()
@@ -80,24 +81,18 @@ public class DashboardManager : MonoBehaviour
 
     public void Navigate(string name)
     {
-        if (SceneTransition.IsLoading) return;
-
         SoundManager.Instance.PlayHardClick();
         if (name.Equals("Exit"))
         {
-#if UNITY_WEBGL && !UNITY_EDITOR
-            return;
-#else
             Application.Quit();
             
             #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
             #endif
-#endif
         } 
         else
         {
-            SceneTransition.Load(name);   
+            SceneManager.LoadScene(name);   
         }
     }
 

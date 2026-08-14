@@ -33,23 +33,9 @@ public class UIManager : MonoBehaviour
         textLevelName.text = Constants.Instance.BossName();
     }
 
-    private void OnDestroy()
-    {
-        if (Instance == this)
-        {
-            Instance = null;
-        }
-    }
-
     void Update()
     {
-        if (SceneTransition.IsLoading) return;
-
-        var healthManager = HealthManager.Instance;
-        var pauseManager = PauseManager.Instance;
-        if (healthManager == null || pauseManager == null) return;
-
-        if(!healthManager.IsGameOver && !pauseManager.IsGamePaused)
+        if(!HealthManager.Instance.IsGameOver && !PauseManager.Instance.IsGamePaused)
         {
             if(!PauseMenu.activeSelf) return;
             PauseMenu.SetActive(false);
@@ -58,19 +44,19 @@ public class UIManager : MonoBehaviour
 
         if(PauseMenu.activeSelf) return;
         PauseMenu.SetActive(true);
-        if(pauseManager.IsGamePaused)
+        if(PauseManager.Instance.IsGamePaused)
         {
             ResumeButton.SetActive(true);
             TextStatus.text = "Paused";
             NextBossButton.SetActive(false);
         }
-        else if (healthManager.IsHeroDead)
+        else if (HealthManager.Instance.IsHeroDead)
         {
             ResumeButton.SetActive(false);
             TextStatus.text = $"{Constants.Instance.SelectedHeroName()} was defeated by {Constants.Instance.BossName()}";
             NextBossButton.SetActive(false);
         } 
-        else if (healthManager.IsBossDead)
+        else if (HealthManager.Instance.IsBossDead)
         {
             ResumeButton.SetActive(false);
             if (Constants.Instance.IsNextLevel)

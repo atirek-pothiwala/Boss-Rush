@@ -18,14 +18,6 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
-    {
-        if (Instance == this)
-        {
-            Instance = null;
-        }
-    }
-
     void Start()
     {
         LoadEnvironment();

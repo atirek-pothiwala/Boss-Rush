@@ -15,10 +15,7 @@ public class PlayerController : MonoBehaviour
     private SoundManager SoundManager => SoundManager.Instance;
     private PauseManager PauseManager => PauseManager.Instance;
     private HealthManager HealthManager => HealthManager.Instance;
-    public bool IsPreventActions =>
-        SceneTransition.IsLoading ||
-        (PauseManager.Instance != null && PauseManager.Instance.IsGamePaused) ||
-        (HealthManager.Instance != null && HealthManager.Instance.IsGameOver);
+    public bool IsPreventActions => PauseManager.IsGamePaused || HealthManager.IsGameOver;
 
     private bool isBusy = false;
     private bool isSprint = false;
@@ -77,10 +74,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (SceneTransition.IsLoading) return;
-
-        var pauseManager = PauseManager.Instance;
-        if (pauseManager != null && pauseManager.IsGamePaused) return;
+        if (PauseManager.IsGamePaused) return;
         if (boss == null)
         {
             boss = GameObject.FindGameObjectWithTag("Boss");
@@ -88,12 +82,9 @@ public class PlayerController : MonoBehaviour
         }
         ApplyGravity();
         
-        var healthManager = HealthManager.Instance;
-        if (healthManager == null) return;
-
-        if (healthManager.IsGameOver)
+        if (HealthManager.IsGameOver)
         {
-            if(healthManager.IsBossDead) StopMovement();
+            if(HealthManager.IsBossDead) StopMovement();
             return;
         }
         if(isBusy) return;
