@@ -161,6 +161,9 @@ Assembly definition `BossRush.asmdef` keeps game code isolated from tests (`Boss
 ### Pause Menu
 ![Pause menu — Resume, Restart Level, Exit to Main Menu](images/pause_menu.png)
 
+### Defeat Screen
+![Defeat screen — Samurai defeated by Minotaur with retry options](images/boss_defeated.png)
+
 ---
 
 ## Gameplay Video
