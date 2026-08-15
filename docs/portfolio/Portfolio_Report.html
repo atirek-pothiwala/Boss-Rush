@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boss Rush — Portfolio Report</title>
+  <style>
+    body { font-family: Georgia, 'Times New Roman', serif; max-width: 900px; margin: 2rem auto; padding: 0 1.5rem; line-height: 1.6; color: #222; }
+    h1, h2, h3 { font-family: system-ui, sans-serif; color: #111; }
+    h1 { border-bottom: 2px solid #4a3aff; padding-bottom: 0.5rem; }
+    h2 { margin-top: 2rem; border-bottom: 1px solid #ccc; padding-bottom: 0.25rem; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th, td { border: 1px solid #ccc; padding: 0.5rem 0.75rem; text-align: left; }
+    th { background: #f4f4f8; }
+    figure { margin: 1.5rem 0; text-align: center; }
+    figure img { max-width: 100%; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    figcaption { font-size: 0.9rem; color: #555; margin-top: 0.5rem; font-style: italic; }
+    code, pre { font-family: 'Consolas', monospace; font-size: 0.9rem; }
+    pre { background: #f6f6f8; padding: 1rem; overflow-x: auto; border-radius: 4px; }
+    a { color: #4a3aff; }
+    .meta { color: #555; font-size: 0.95rem; }
+    ul { padding-left: 1.25rem; }
+  </style>
+</head>
+<body>
+
+<h1>Boss Rush — Student Portfolio Report</h1>
+<p class="meta">
+  <strong>Track:</strong> Game Development and Simulation &nbsp;|&nbsp;
+  <strong>Engine:</strong> Unity 6 (6000.4.3f1) &nbsp;|&nbsp;
+  <strong>Live Demo:</strong> <a href="https://atirek-pothiwala.github.io/Boss-Rush/">atirek-pothiwala.github.io/Boss-Rush</a>
+</p>
+
+<h2>Project Overview</h2>
+<p><strong>Boss Rush</strong> is a 2D side-view fighting game where the player selects one of three heroes and fights through a sequence of three bosses: <strong>Minotaur</strong>, <strong>Werewolf</strong>, and <strong>Gorgon</strong>. Each boss has unique attack patterns, animations, and battle music. The player manages health and stamina, blocks with a shield, and exploits openings after boss attacks to win.</p>
+<p>A full run takes approximately <strong>8–12 minutes</strong> (three boss encounters with save/resume). The project demonstrates scalable Unity architecture, data-driven combat, animator-driven boss AI, and polished WebGL deployment.</p>
+
+<h2>Features</h2>
+<ul>
+  <li>Three playable heroes (Samurai, Shinobi, Fighter) with distinct stats</li>
+  <li>Three bosses with unique behaviours and enrage phases (below 50% HP)</li>
+  <li>Health and stamina systems for player and boss</li>
+  <li>Combat: quick/power/special attacks, shield, jump, run</li>
+  <li>Boss AI: approach, attack by range/stamina, retreat, enrage</li>
+  <li>Save/resume progress; settings for music and SFX volume</li>
+  <li>Pause, restart, exit to menu; victory and defeat screens</li>
+  <li>WebGL deploy with landscape layout and mobile rotate prompt</li>
+</ul>
+
+<h2>Controls</h2>
+<table>
+  <tr><th>Action</th><th>Keyboard</th><th>Gamepad</th></tr>
+  <tr><td>Move</td><td>WASD / Arrow Keys</td><td>Left Stick</td></tr>
+  <tr><td>Run</td><td>Shift</td><td>RB</td></tr>
+  <tr><td>Jump</td><td>Space</td><td>A</td></tr>
+  <tr><td>Quick Attack</td><td>Left Mouse</td><td>Y</td></tr>
+  <tr><td>Power Attack</td><td>Right Mouse</td><td>X</td></tr>
+  <tr><td>Special Attack</td><td>E</td><td>B</td></tr>
+  <tr><td>Shield</td><td>Q</td><td>LB</td></tr>
+  <tr><td>Pause</td><td>Escape</td><td>Start</td></tr>
+</table>
+
+<h2>Techniques Used</h2>
+<ul>
+  <li><strong>Single-responsibility managers</strong> — Dashboard, Level, Health, UI, Pause, Sound, Camera</li>
+  <li><strong>Data-driven combat</strong> — <code>PlayerAttackConfig</code> and <code>BossAttackConfig</code> on prefabs</li>
+  <li><strong>Animator state machines</strong> — <code>PlayerState</code> / <code>BossState</code> enums drive animation</li>
+  <li><strong>Unity Input System</strong> — keyboard + gamepad via event-based <code>PlayerInputManager</code></li>
+  <li><strong>Canvas Scaler</strong> — 1280×720 landscape UI with runtime-built menus</li>
+  <li><strong>SceneTransition</strong> — deferred loads for WebGL stability</li>
+  <li><strong>EditMode tests</strong> — save/load, constants, boss animator validation</li>
+  <li><strong>CI/CD</strong> — GitHub Actions compile + WebGL deploy</li>
+</ul>
+
+<h2>Challenges</h2>
+<ul>
+  <li>Boss animator misconfiguration (Minotaur idle freeze) — prefab audit + failsafe recovery</li>
+  <li>WebGL <code>null function</code> on scene change — deferred loading + event cleanup</li>
+  <li>Escape pause required hold — fixed PressAndRelease input interaction</li>
+  <li>Mobile layout — landscape lock and canvas scaler tuning</li>
+  <li>Singleton lifecycle during scene unload — null guards and OnDestroy cleanup</li>
+</ul>
+
+<h2>Future Improvements</h2>
+<ul>
+  <li>Fourth boss / hard mode; attack telegraphs; achievements</li>
+  <li>Object pooling for VFX; more automated combat tests</li>
+  <li>Gamepad UI navigation; localisation</li>
+</ul>
+
+<h2>Screenshots</h2>
+
+<figure>
+  <img src="images/main_menu.png" alt="Main menu">
+  <figcaption>Figure 1 — Main menu</figcaption>
+</figure>
+
+<figure>
+  <img src="images/hero_selection.png" alt="Hero selection">
+  <figcaption>Figure 2 — Hero selection (Samurai, Shinobi, Fighter)</figcaption>
+</figure>
+
+<figure>
+  <img src="images/combat_minotaur.png" alt="Combat vs Minotaur">
+  <figcaption>Figure 3 — Combat against Minotaur</figcaption>
+</figure>
+
+<figure>
+  <img src="images/pause_menu.png" alt="Pause menu">
+  <figcaption>Figure 4 — Pause menu during combat</figcaption>
+</figure>
+
+<h2>Gameplay Video</h2>
+<p>Play the live build and record a 5–8 minute session for submission:</p>
+<p><strong><a href="https://atirek-pothiwala.github.io/Boss-Rush/">https://atirek-pothiwala.github.io/Boss-Rush/</a></strong></p>
+<p>Suggested flow: main menu → hero selection → fight all three bosses → pause/resume demo.</p>
+
+<h2>Project Structure</h2>
+<pre>Assets/Src/
+├── Boss/        BossController, BossAttackConfig
+├── Player/      PlayerController, input, attacks
+├── Managers/    Level, UI, Health, Pause, Sound, Camera, Dashboard
+├── Utils/       Constants, GameSave, SceneTransition
+└── Tests/       EditMode unit tests</pre>
+
+<p><em>Report follows Section 1 portfolio guidelines — Game Development and Simulation track.</em></p>
+
+</body>
+</html>
