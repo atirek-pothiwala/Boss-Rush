@@ -143,7 +143,7 @@ Assembly definition `BossRush.asmdef` keeps game code isolated from tests (`Boss
 - Localisation for menu text
 - Full gamepad-focused UI navigation on pause menus
 - Additional EditMode/playmode tests for combat damage and AI decision logic
-- Recorded gameplay trailer embedded in the portfolio submission
+- Recorded gameplay trailer embedded in the portfolio submission (`docs/portfolio/gameplay_demo.mp4`)
 
 ---
 
@@ -168,20 +168,24 @@ Assembly definition `BossRush.asmdef` keeps game code isolated from tests (`Boss
 
 ## Gameplay Video
 
+A gameplay walkthrough is **embedded in this repository** and plays in the HTML report.
+
 | Item | Details |
 |------|---------|
 | **Live playable build** | https://atirek-pothiwala.github.io/Boss-Rush/ |
-| **Suggested recording** | 5–8 minutes: menu → hero pick → boss fights → pause/resume |
-| **Submission** | Record with OBS (or similar) while playing the WebGL build, then upload to YouTube/Google Drive and paste the link here |
+| **Embedded demo video** | [`gameplay_demo.mp4`](gameplay_demo.mp4) (~22 s) |
+| **Interactive report** | Open [`Portfolio_Report.html`](Portfolio_Report.html) in a browser |
 
-**Recording checklist for submission:**
+**Demo flow (captured from the WebGL build):**
 1. Main menu and hero selection
-2. At least one full boss fight (Minotaur recommended for demo)
-3. Pause menu (Escape) and Resume
-4. Victory or defeat screen
-5. Optional: Settings volume sliders and Continue saved run
+2. Minotaur boss fight
+3. Pause menu (Escape) and resume
+4. Defeat screen with Restart and Exit to Main Menu
 
-*Replace this section with your video URL before final submission, e.g. `https://youtu.be/your-video-id`*
+<video controls width="100%" poster="images/main_menu.png">
+  <source src="gameplay_demo.mp4" type="video/mp4">
+  Your browser does not support embedded video. Download <a href="gameplay_demo.mp4">gameplay_demo.mp4</a> instead.
+</video>
 
 ---
 
