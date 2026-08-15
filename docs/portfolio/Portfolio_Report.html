@@ -120,6 +120,64 @@
 <p><strong><a href="https://atirek-pothiwala.github.io/Boss-Rush/">https://atirek-pothiwala.github.io/Boss-Rush/</a></strong></p>
 <p>Suggested flow: main menu → hero selection → fight all three bosses → pause/resume demo.</p>
 
+<h2>Section 1: Portfolio Guidelines Compliance</h2>
+<table>
+  <tr><th>Guideline</th><th>Compliance</th></tr>
+  <tr><td>2–3 polished levels / enemies</td><td>3 boss stages; Minotaur, Werewolf, Gorgon</td></tr>
+  <tr><td>5–15 min gameplay</td><td>~8–12 min full run</td></tr>
+  <tr><td>Separated systems</td><td>Boss/, Player/, Managers/, Utils/, Tests/</td></tr>
+  <tr><td>State machines</td><td>PlayerState, BossState + game flow (play/pause/win/loss)</td></tr>
+  <tr><td>UI scaling</td><td>Canvas Scaler 1280×720; WebGL landscape letterbox</td></tr>
+  <tr><td>Optimisation</td><td>Cached refs; no Debug.Log in Update; deferred scene loads</td></tr>
+</table>
+
+<h2>Section 2: Game Portfolio Brief (Option 1)</h2>
+<p><strong>Track:</strong> Game — boss-rush action variant (architecture aligned with Option 1 standards).</p>
+
+<h3>Core mechanics mapping</h3>
+<table>
+  <tr><th>Brief requirement</th><th>Boss Rush equivalent</th></tr>
+  <tr><td>Auto weapons + move only</td><td>Manual quick/power/special + shield</td></tr>
+  <tr><td>Enemy spawning + scaling</td><td>3 sequential bosses; enrage below 50% HP</td></tr>
+  <tr><td>XP + level-up upgrades</td><td>Hero selection + Next Boss progression</td></tr>
+  <tr><td>Health, damage, death</td><td>HealthManager HP/stamina; victory/defeat UI</td></tr>
+</table>
+
+<h3>Content requirements</h3>
+<table>
+  <tr><th>Requirement</th><th>Delivery</th></tr>
+  <tr><td>3–4 enemy types</td><td>Minotaur (tanky melee), Werewolf (aerial), Gorgon (ranged scream)</td></tr>
+  <tr><td>4+ weapons</td><td>Quick, power, special attacks + shield</td></tr>
+  <tr><td>6+ upgrades</td><td>3 hero builds + enrage + stamina + save/resume + settings + boss music</td></tr>
+  <tr><td>5–15 min run</td><td>~8–12 minutes</td></tr>
+</table>
+
+<h3>Systems separation</h3>
+<ul>
+  <li><strong>Movement / health / stats:</strong> PlayerController, HealthManager, HeroStats</li>
+  <li><strong>Weapons:</strong> PlayerAttackConfig / BossAttackConfig (data-driven)</li>
+  <li><strong>Spawner:</strong> LevelManager spawns hero + boss by level index</li>
+  <li><strong>Progression:</strong> Constants + GameSave (hero, boss index)</li>
+  <li><strong>UI + audio:</strong> UIManager, SoundManager (separate)</li>
+</ul>
+
+<h3>Must use</h3>
+<table>
+  <tr><th>Requirement</th><th>Implementation</th></tr>
+  <tr><td>ScriptableObjects / data-driven</td><td>Attack config classes on prefabs; Constants, GameSave</td></tr>
+  <tr><td>Object pooling</td><td>Not needed at 1v1 scale; planned for VFX expansion</td></tr>
+  <tr><td>Inheritance / interfaces</td><td>Parallel Player/Boss combat; state enums</td></tr>
+  <tr><td>Game state machine</td><td>Playing, Paused, Victory, Defeat, Main Menu</td></tr>
+</table>
+
+<h3>Why strong portfolio piece</h3>
+<ul>
+  <li>Data-driven combat and boss AI</li>
+  <li>Separated manager architecture + asmdef tests</li>
+  <li>WebGL deploy pipeline with CI validation</li>
+  <li>Three distinct boss behaviours with enrage phases</li>
+</ul>
+
 <h2>Project Structure</h2>
 <pre>Assets/Src/
 ├── Boss/        BossController, BossAttackConfig
@@ -128,7 +186,7 @@
 ├── Utils/       Constants, GameSave, SceneTransition
 └── Tests/       EditMode unit tests</pre>
 
-<p><em>Report follows Section 1 portfolio guidelines — Game Development and Simulation track.</em></p>
+<p><em>Report covers Section 1 (mandatory guidelines) and Section 2 (Game portfolio brief) — Game Development and Simulation track.</em></p>
 
 </body>
 </html>
