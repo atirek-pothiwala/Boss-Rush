@@ -24,10 +24,16 @@ public class UIManager : MonoBehaviour
     public Slider HeroHealth;
     public Slider HeroStamina;
 
+    private Color defaultStatusColor = Color.white;
+    private float defaultStatusFontSize = 36f;
+    private FontStyles defaultStatusFontStyle = FontStyles.Normal;
+    private bool victorySaveCleared;
+
     private void Awake()
     {
         Instance = this;
 
+        CacheStatusTextDefaults();
         EnsurePauseMenuVisible();
         PauseMenu.SetActive(false);
         AttributeMenu.SetActive(true);
@@ -51,42 +57,89 @@ public class UIManager : MonoBehaviour
         var pauseManager = PauseManager.Instance;
         if (healthManager == null || pauseManager == null) return;
 
-        if(!healthManager.IsGameOver && !pauseManager.IsGamePaused)
+        var shouldShowOverlay = healthManager.IsGameOver || pauseManager.IsGamePaused;
+        if (!shouldShowOverlay)
         {
-            if(!PauseMenu.activeSelf) return;
-            PauseMenu.SetActive(false);
+            victorySaveCleared = false;
+            if (PauseMenu.activeSelf)
+            {
+                PauseMenu.SetActive(false);
+            }
+
             return;
         }
 
-        if(PauseMenu.activeSelf) return;
-
         EnsurePauseMenuVisible();
-        PauseMenu.SetActive(true);
-        if(pauseManager.IsGamePaused)
+        if (!PauseMenu.activeSelf)
+        {
+            PauseMenu.SetActive(true);
+        }
+
+        RefreshOverlay(healthManager, pauseManager);
+    }
+
+    private void RefreshOverlay(HealthManager healthManager, PauseManager pauseManager)
+    {
+        if (healthManager.IsHeroDead)
+        {
+            ResumeButton.SetActive(false);
+            NextBossButton.SetActive(false);
+            ApplyVictoryStyle(false);
+            TextStatus.text = $"{Constants.Instance.SelectedHeroName()} was defeated by {Constants.Instance.BossName()}";
+            return;
+        }
+
+        if (healthManager.IsBossDead)
+        {
+            ResumeButton.SetActive(false);
+
+            var hasMoreBosses = Constants.Instance.HasMoreBosses;
+            ApplyVictoryStyle(!hasMoreBosses);
+            TextStatus.text = Constants.Instance.GetBossDefeatedStatusMessage();
+            NextBossButton.SetActive(hasMoreBosses);
+
+            if (!hasMoreBosses && !victorySaveCleared)
+            {
+                Constants.Instance.CompleteRun();
+                victorySaveCleared = true;
+            }
+
+            return;
+        }
+
+        if (pauseManager.IsGamePaused)
         {
             ResumeButton.SetActive(true);
+            NextBossButton.SetActive(false);
+            ApplyVictoryStyle(false);
             TextStatus.text = "Paused";
-            NextBossButton.SetActive(false);
         }
-        else if (healthManager.IsHeroDead)
+    }
+
+    private void CacheStatusTextDefaults()
+    {
+        if (TextStatus == null) return;
+
+        defaultStatusColor = TextStatus.color;
+        defaultStatusFontSize = TextStatus.fontSize;
+        defaultStatusFontStyle = TextStatus.fontStyle;
+    }
+
+    private void ApplyVictoryStyle(bool isVictory)
+    {
+        if (TextStatus == null) return;
+
+        if (isVictory)
         {
-            ResumeButton.SetActive(false);
-            TextStatus.text = $"{Constants.Instance.SelectedHeroName()} was defeated by {Constants.Instance.BossName()}";
-            NextBossButton.SetActive(false);
-        } 
-        else if (healthManager.IsBossDead)
-        {
-            ResumeButton.SetActive(false);
-            if (Constants.Instance.IsNextLevel)
-            {
-                TextStatus.text = $"{Constants.Instance.BossName()} defeated!\nNext boss: {Constants.Instance.NextBossName()}";
-            }
-            else
-            {
-                TextStatus.text = $"Victory!\n{Constants.Instance.SelectedHeroName()} conquered the Boss Rush!";
-            }
-            NextBossButton.SetActive(Constants.Instance.IsNextLevel);
+            TextStatus.fontStyle = FontStyles.Bold;
+            TextStatus.fontSize = 42f;
+            TextStatus.color = new Color(1f, 0.85f, 0.2f);
+            return;
         }
+
+        TextStatus.fontStyle = defaultStatusFontStyle;
+        TextStatus.fontSize = defaultStatusFontSize;
+        TextStatus.color = defaultStatusColor;
     }
 
     private void EnsurePauseMenuVisible()
