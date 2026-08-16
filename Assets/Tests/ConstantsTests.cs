@@ -37,4 +37,30 @@ public class ConstantsTests
         Constants.Instance.NextLevel();
         Assert.AreEqual("", Constants.Instance.NextBossName());
     }
+
+    [Test]
+    public void HasMoreBosses_IsFalseOnFinalBoss()
+    {
+        Constants.Instance.NextLevel();
+        Constants.Instance.NextLevel();
+        Assert.IsFalse(Constants.Instance.HasMoreBosses);
+    }
+
+    [Test]
+    public void GetBossDefeatedStatusMessage_ShowsVictoryOnFinalBoss()
+    {
+        Constants.Instance.NextLevel();
+        Constants.Instance.NextLevel();
+        var message = Constants.Instance.GetBossDefeatedStatusMessage();
+        StringAssert.Contains("Victory!", message);
+        StringAssert.Contains("Samurai conquered the Boss Rush!", message);
+    }
+
+    [Test]
+    public void GetBossDefeatedStatusMessage_ShowsNextBossBeforeFinalFight()
+    {
+        var message = Constants.Instance.GetBossDefeatedStatusMessage();
+        StringAssert.Contains("Minotaur defeated!", message);
+        StringAssert.Contains("Next boss: Werewolf", message);
+    }
 }

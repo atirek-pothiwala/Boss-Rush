@@ -27,7 +27,8 @@ public class Constants
 
     public int CurrentLevel => level;
     public int SelectedHeroIndex => selectedHeroIndex;
-    public bool IsNextLevel => level + 1 <= maxLevel;
+    public bool HasMoreBosses => level < maxLevel;
+    public bool IsNextLevel => HasMoreBosses;
 
     public void SelectHero(int heroIndex)
     {
@@ -65,8 +66,23 @@ public class Constants
 
     public string NextBossName()
     {
-        if (!IsNextLevel) return "";
+        if (!HasMoreBosses) return "";
         return BossNameForLevel(level + 1);
+    }
+
+    public string GetBossDefeatedStatusMessage()
+    {
+        if (HasMoreBosses)
+        {
+            return $"{BossName()} defeated!\nNext boss: {NextBossName()}";
+        }
+
+        return $"Victory!\n{SelectedHeroName()} conquered the Boss Rush!";
+    }
+
+    public void CompleteRun()
+    {
+        GameSave.ClearRun();
     }
 
     private static string BossNameForLevel(int bossLevel)
