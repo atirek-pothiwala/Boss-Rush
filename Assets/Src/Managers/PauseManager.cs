@@ -88,6 +88,13 @@ public class PauseManager : MonoBehaviour
         SoundManager.Instance.PlayMenuMusic();
 
         IsGamePaused = false;
+        Time.timeScale = 1;
+
+        if (HealthManager.Instance != null && HealthManager.Instance.IsHeroDead)
+        {
+            Constants.Instance.ResetProgress();
+        }
+
         SceneTransition.Load("Main Menu");
     }
 
