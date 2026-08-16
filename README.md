@@ -99,6 +99,16 @@ Set `UNITY_SERIAL`, `UNITY_EMAIL`, and `UNITY_PASSWORD` as environment secrets t
 
 Edit-mode tests live in `Assets/Tests/` and cover save/load logic and game constants. Run them from the Unity Test Runner window.
 
+## Portfolio
+
+Student portfolio report (Section 1 + Section 2) with screenshots and an embedded gameplay walkthrough:
+
+- **Report (HTML):** [`docs/portfolio/Portfolio_Report.html`](docs/portfolio/Portfolio_Report.html)
+- **Gameplay video:** [`docs/portfolio/gameplay_demo.mp4`](docs/portfolio/gameplay_demo.mp4)
+- **PDF export:** [`docs/portfolio/Portfolio_Report.pdf`](docs/portfolio/Portfolio_Report.pdf)
+
+After deployment, the report is also available at [atirek-pothiwala.github.io/Boss-Rush/portfolio/Portfolio_Report.html](https://atirek-pothiwala.github.io/Boss-Rush/portfolio/Portfolio_Report.html).
+
 ## License
 
 See repository license for asset and code terms.

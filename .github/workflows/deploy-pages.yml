@@ -80,6 +80,9 @@ jobs:
           cp -r "$BUILD_OUTPUT"/* "$SITE_ROOT/"
           touch "$SITE_ROOT/.nojekyll"
           cp README.md "$SITE_ROOT/README.md" || true
+          if [ -d docs/portfolio ]; then
+            cp -r docs/portfolio "$SITE_ROOT/portfolio"
+          fi
           # Redirect old /WebGL/ bookmarks to the site root
           mkdir -p "$SITE_ROOT/WebGL"
           cat > "$SITE_ROOT/WebGL/index.html" << 'EOF'
